@@ -2,12 +2,12 @@ package Model;
 
 import java.time.LocalDate;
 
-public class sellModel {
+public class sell {
     private int id;
     private LocalDate date;
     private double totalAmount;
 
-    public sellModel(LocalDate date, double totalAmount) {
+    public sell(LocalDate date, double totalAmount) {
         this.date = date;
         this.totalAmount = totalAmount;
     }

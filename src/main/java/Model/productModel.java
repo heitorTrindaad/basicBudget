@@ -1,11 +1,11 @@
 package Model;
 
-public class productModel {
+public class product {
     private int id;
     private String name;
     private double price;
 
-    public productModel(String name, double price) {
+    public product(String name, double price) {
         this.name = name;
         this.price = price;
     }

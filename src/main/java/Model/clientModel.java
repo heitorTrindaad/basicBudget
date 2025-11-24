@@ -1,11 +1,11 @@
 package Model;
 
-public class clientModel {
+public class client {
     private int id;
     private String name;
     private String email;
 
-    public clientModel(String name, String email) {
+    public client(String name, String email) {
         this.name = name;
         this.email = email;
     }

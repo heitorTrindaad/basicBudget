@@ -1,11 +1,11 @@
 package Model;
 
-public class budgetModel {
+public class budget {
     private int id;
     private float quantity;
     private String measurement;
 
-    public budgetModel(float quantity, String measurement) {
+    public budget(float quantity, String measurement) {
         this.quantity = quantity;
         this.measurement = measurement;
     }
