@@ -35,11 +35,11 @@ public class clientRepository {
     }
 
     public void remove(int id){
-        for (Client client : clients){
-            if(client.getId() == id){
-                clients.remove(client);
-            }
+        Client client = findById(id);
+        if(client != null){
+            clients.remove(client);
         }
+
     }
 
 }

@@ -1,6 +1,7 @@
 package Repository;
 
 import Model.Budget;
+import Model.Sale;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +36,11 @@ public class budgetRepository {
     }
 
     public void remove(int id){
-        for (Budget budget : budgets){
-            if(budget.getId() == id){
-                budgets.remove(budget);
-            }
+        Budget budget = findById(id);
+        if(budget != null){
+            budgets.remove(budget);
         }
+
     }
 
 }

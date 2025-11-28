@@ -36,11 +36,11 @@ public class saleRepository {
     }
 
     public void remove(int id){
-        for (Sale sale : sales){
-            if(sale.getId() == id){
+            Sale sale = findById(id);
+            if(sale != null){
                 sales.remove(sale);
             }
-        }
+
     }
 
 }

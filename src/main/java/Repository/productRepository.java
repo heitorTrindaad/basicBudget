@@ -35,11 +35,11 @@ public class productRepository {
     }
 
     public void remove(int id){
-        for (Product product : products){
-            if(product.getId() == id){
-                products.remove(product);
-            }
+        Product product = findById(id);
+        if(product != null){
+            products.remove(product);
         }
+
     }
 
 
