@@ -5,8 +5,7 @@ public class Budget {
     private float quantity;
     private String measurement;
 
-    public Budget(int id, float quantity, String measurement) {
-        this.id = id;
+    public Budget(float quantity, String measurement) {
         this.quantity = quantity;
         this.measurement = measurement;
     }

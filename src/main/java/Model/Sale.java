@@ -1,14 +1,14 @@
 package Model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Sale {
     private int id;
     private LocalDate date;
-    private double totalAmount;
+    private BigDecimal totalAmount;
 
-    public Sale(int id, LocalDate date, double totalAmount) {
-        this.id = id;
+    public Sale(LocalDate date, BigDecimal totalAmount) {
         this.date = date;
         this.totalAmount = totalAmount;
     }
@@ -29,11 +29,11 @@ public class Sale {
         this.date = date;
     }
 
-    public double getTotalAmount() {
+    public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(double totalAmount) {
+    public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
 }

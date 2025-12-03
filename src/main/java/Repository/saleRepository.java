@@ -11,11 +11,12 @@ public class saleRepository {
     private final List<Sale> sales = new ArrayList<>();
     private final AtomicInteger idCounter = new AtomicInteger(1);;
 
-    public void save(Sale sale){
+    public Sale save(Sale sale){
         if(sale.getId() == 0){
             sale.setId(idCounter.getAndIncrement());
         }
         this.sales.add(sale);
+        return sale;
     }
 
     public Sale findById(int id){

@@ -1,7 +1,6 @@
 package Repository;
 
 import Model.Budget;
-import Model.Sale;
 
 import java.util.ArrayList;
 import java.util.List;

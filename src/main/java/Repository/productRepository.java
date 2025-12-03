@@ -10,11 +10,12 @@ public class productRepository {
     private final List<Product> products = new ArrayList<>();
     private final AtomicInteger idCounter = new AtomicInteger(1);;
 
-    public void save(Product product){
+    public Product save(Product product){
         if(product.getId() == 0){
             product.setId(idCounter.getAndIncrement());
         }
         this.products.add(product);
+        return product;
     }
 
     public Product findById(int id){
@@ -25,6 +26,8 @@ public class productRepository {
         }
         return null;
     }
+
+
 
     public void update(int id, Product product){
         Product existstingProduct = findById(id);
