@@ -1,11 +1,13 @@
 package Model;
 
+import java.math.BigDecimal;
+
 public class Budget {
     private int id;
-    private float quantity;
+    private BigDecimal quantity;
     private String measurement;
 
-    public Budget(float quantity, String measurement) {
+    public Budget(BigDecimal quantity, String measurement) {
         this.quantity = quantity;
         this.measurement = measurement;
     }
@@ -14,11 +16,11 @@ public class Budget {
 
     public void setId(int id) { this.id = id; }
 
-    public float getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(float quantity) {
+    public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
     }
 

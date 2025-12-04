@@ -10,11 +10,12 @@ public class budgetRepository {
     private final List<Budget> budgets = new ArrayList<>();
     private final AtomicInteger idCounter = new AtomicInteger(1);;
 
-    public void save(Budget budget){
+    public Budget save(Budget budget){
         if(budget.getId() == 0){
             budget.setId(idCounter.getAndIncrement());
         }
         this.budgets.add(budget);
+        return budget;
     }
 
     public Budget findById(int id){

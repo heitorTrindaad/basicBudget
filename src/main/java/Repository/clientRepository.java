@@ -10,11 +10,12 @@ public class clientRepository {
     private final List<Client> clients = new ArrayList<>();
     private final AtomicInteger idCounter = new AtomicInteger(1);;
 
-    public void save(Client client) {
+    public Client save(Client client) {
         if(client.getId() == 0){
             client.setId(idCounter.getAndIncrement());
         }
         this.clients.add(client);
+        return client;
     }
 
     public Client findById(int id){
