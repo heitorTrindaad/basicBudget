@@ -7,12 +7,29 @@ public class Budget {
     private BigDecimal quantity;
     private String measurement;
 
+    private Product product;
+    private Sale sale;
+
     public Budget() {
     }
 
-    public Budget(BigDecimal quantity, String measurement) {
+    public Budget(BigDecimal quantity, String measurement, Product product, Sale sale) {
         this.quantity = quantity;
         this.measurement = measurement;
+        this.product = product;
+        this.sale = sale;
+    }
+
+    public BigDecimal getSubTotal(){
+        return product.getPrice().multiply(quantity);
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public Sale getSale() {
+        return sale;
     }
 
     public int getId() { return id; }

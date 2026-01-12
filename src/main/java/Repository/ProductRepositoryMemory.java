@@ -29,6 +29,18 @@ public class ProductRepositoryMemory implements ProductRepository {
     public List<Product> findAll(){
         return products;
     }
+    public void setAll(List<Product> list){
+        products.clear();
+        products.addAll(list);
+
+        int maiorId = list.stream()
+                .mapToInt(Product::getId)
+                .max()
+                .orElse(0);
+
+        idCounter.set(maiorId + 1);
+    }
+
 
     public void delete(int id){
         products.removeIf(p -> p.getId() == id);

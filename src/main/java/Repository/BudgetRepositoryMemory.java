@@ -1,6 +1,8 @@
 package Repository;
 
 import Model.Budget;
+import Model.Client;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -27,6 +29,19 @@ public class BudgetRepositoryMemory implements BudgetRepository {
     public List<Budget> findAll(){
         return budgets;
     }
+
+    public void setAll(List<Budget> list){
+        budgets.clear();
+        budgets.addAll(list);
+
+        int maiorId = list.stream()
+                .mapToInt(Budget::getId)
+                .max()
+                .orElse(0);
+
+        idCounter.set(maiorId + 1);
+    }
+
 
     public void update(int id, Budget budget){
         Budget existing = findById(id);

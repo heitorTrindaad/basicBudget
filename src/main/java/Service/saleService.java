@@ -22,7 +22,7 @@ public class saleService {
             throw new IllegalArgumentException("Total Amount is invalid.");
         }
 
-        Sale sale = new Sale(date, totalAmount);
+        Sale sale = new Sale();
         sale.setDate(date);
         sale.setTotalAmount(totalAmount);
 
@@ -51,6 +51,6 @@ public class saleService {
     }
 
     public void deleteSale(int id){
-        SaleRepositoryMemory.remove(id);
+        SaleRepositoryMemory.delete(id);
     }
 }

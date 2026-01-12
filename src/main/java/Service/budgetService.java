@@ -19,7 +19,7 @@ public class budgetService {
         if (quantity == null || quantity.compareTo(BigDecimal.ZERO)<=0){
             throw new IllegalArgumentException("Product quantity is invalid.");
         }
-        Budget budget = new Budget(quantity, measurement);
+        Budget budget = new Budget();
         budget.setMeasurement(measurement.trim());
         budget.setQuantity(quantity);
 

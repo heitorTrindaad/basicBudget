@@ -30,6 +30,19 @@ public class ClientRepositoryMemory implements ClientRepository {
         return clients;
     }
 
+    public void setAll(List<Client> list){
+        clients.clear();
+        clients.addAll(list);
+
+        int maiorId = list.stream()
+                .mapToInt(Client::getId)
+                .max()
+                .orElse(0);
+
+        idCounter.set(maiorId + 1);
+    }
+
+
     public void delete(int id){
         clients.removeIf(c -> c.getId() == id);
     }

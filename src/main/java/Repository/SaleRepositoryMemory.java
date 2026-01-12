@@ -30,6 +30,19 @@ public class SaleRepositoryMemory implements SaleRepository {
         return sales;
     }
 
+    public void setAll(List<Sale> list){
+        sales.clear();
+        sales.addAll(list);
+
+        int maiorId = list.stream()
+                .mapToInt(Sale::getId)
+                .max()
+                .orElse(0);
+
+        idCounter.set(maiorId + 1);
+    }
+
+
     public void delete(int id){
         sales.removeIf(s -> s.getId() == id);
     }

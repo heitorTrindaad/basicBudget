@@ -8,5 +8,6 @@ public interface SaleRepository {
     Sale save(Sale sale);
     Sale findById(int id);
     List<Sale> findAll();
+    void setAll(List<Sale> list);
     void delete(int id);
 }

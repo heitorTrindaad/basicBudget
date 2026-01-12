@@ -8,5 +8,6 @@ public interface ClientRepository {
         Client save(Client client);
         Client findById(int id);
         List<Client> findAll();
+        void setAll(List<Client> list);
         void delete(int id);
 }
