@@ -8,6 +8,9 @@ public class Sale {
     private LocalDate date;
     private BigDecimal totalAmount;
 
+    public Sale() {
+    }
+
     public Sale(LocalDate date, BigDecimal totalAmount) {
         this.date = date;
         this.totalAmount = totalAmount;

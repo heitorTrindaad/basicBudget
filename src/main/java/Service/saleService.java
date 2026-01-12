@@ -1,16 +1,16 @@
 package Service;
 
 import Model.Sale;
-import Repository.saleRepository;
+import Repository.SaleRepositoryMemory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class saleService {
-    private final saleRepository saleRepository;
+    private final SaleRepositoryMemory SaleRepositoryMemory;
 
-    public saleService(saleRepository saleRepository) {
-        this.saleRepository = saleRepository;
+    public saleService(SaleRepositoryMemory SaleRepositoryMemory) {
+        this.SaleRepositoryMemory = SaleRepositoryMemory;
     }
 
 
@@ -26,11 +26,11 @@ public class saleService {
         sale.setDate(date);
         sale.setTotalAmount(totalAmount);
 
-        return saleRepository.save(sale);
+        return SaleRepositoryMemory.save(sale);
     }
 
     public Sale updateSale(int id, LocalDate date, BigDecimal totalAmount){
-        Sale sale = saleRepository.findById(id);
+        Sale sale = SaleRepositoryMemory.findById(id);
 
         if (sale == null) {
             throw new IllegalArgumentException("Sale not found.");
@@ -47,10 +47,10 @@ public class saleService {
         sale.setDate(date);
         sale.setTotalAmount(totalAmount);
 
-        return saleRepository.save(sale);
+        return SaleRepositoryMemory.save(sale);
     }
 
     public void deleteSale(int id){
-        saleRepository.remove(id);
+        SaleRepositoryMemory.remove(id);
     }
 }

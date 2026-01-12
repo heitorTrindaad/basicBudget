@@ -1,0 +1,43 @@
+package Repository;
+
+import Model.Budget;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class BudgetRepositoryMemory implements BudgetRepository {
+
+    private final List<Budget> budgets = new ArrayList<>();
+    private final AtomicInteger idCounter = new AtomicInteger(1);
+
+    public Budget save(Budget budget){
+        if(budget.getId() == 0){
+            budget.setId(idCounter.getAndIncrement());
+        }
+        budgets.add(budget);
+        return budget;
+    }
+
+    public Budget findById(int id){
+        return budgets.stream()
+                .filter(b -> b.getId() == id)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public List<Budget> findAll(){
+        return budgets;
+    }
+
+    public void update(int id, Budget budget){
+        Budget existing = findById(id);
+        if(existing != null){
+            existing.setMeasurement(budget.getMeasurement());
+            existing.setQuantity(budget.getQuantity());
+        }
+    }
+
+    public void delete(int id){
+        budgets.removeIf(b -> b.getId() == id);
+    }
+
+}

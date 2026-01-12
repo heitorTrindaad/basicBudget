@@ -1,15 +1,15 @@
 package Service;
 
 import Model.Product;
-import Repository.productRepository;
+import Repository.ProductRepositoryMemory;
 
 import java.math.BigDecimal;
 
 public class productService {
-    private final productRepository productRepository;
+    private final ProductRepositoryMemory ProductRepositoryMemory;
 
-    public productService(productRepository productRepository) {
-        this.productRepository = productRepository;
+    public productService(ProductRepositoryMemory ProductRepositoryMemory) {
+        this.ProductRepositoryMemory = ProductRepositoryMemory;
     }
 
     public Product createProduct(String name, BigDecimal price){
@@ -24,11 +24,11 @@ public class productService {
         product.setName(name.trim());
         product.setPrice(price);
 
-        return productRepository.save(product);
+        return ProductRepositoryMemory.save(product);
     }
 
     public Product updateProduct(int id, String name, BigDecimal price){
-        Product product = productRepository.findById(id);
+        Product product = ProductRepositoryMemory.findById(id);
 
         if (product == null) {
             throw new IllegalArgumentException("Product not found.");
@@ -45,11 +45,11 @@ public class productService {
         product.setName(name.trim());
         product.setPrice(price);
 
-        return productRepository.save(product);
+        return ProductRepositoryMemory.save(product);
     }
 
     public void deleteProduct(int id){
-        productRepository.remove(id);
+        ProductRepositoryMemory.delete(id);
     }
 
 }

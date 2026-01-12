@@ -1,12 +1,12 @@
 package Service;
 
 import Model.Client;
-import Repository.clientRepository;
+import Repository.ClientRepositoryMemory;
 
 public class clientService {
-    private final clientRepository clientRepository;
+    private final ClientRepositoryMemory clientRepository;
 
-    public clientService(clientRepository clientRepository) {
+    public clientService(ClientRepositoryMemory clientRepository) {
         this.clientRepository = clientRepository;
     }
 
@@ -47,7 +47,7 @@ public class clientService {
     }
 
     public void deleteClient(int id){
-        clientRepository.remove(id);
+        clientRepository.delete(id);
     }
 
 }

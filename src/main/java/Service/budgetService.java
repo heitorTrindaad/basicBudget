@@ -1,14 +1,14 @@
 package Service;
 
 import Model.Budget;
-import Repository.budgetRepository;
+import Repository.BudgetRepositoryMemory;
 
 import java.math.BigDecimal;
 
 public class budgetService {
-    private final budgetRepository budgetRepository;
+    private final BudgetRepositoryMemory budgetRepository;
 
-    public budgetService(budgetRepository budgetRepository) {
+    public budgetService(BudgetRepositoryMemory budgetRepository) {
         this.budgetRepository = budgetRepository;
     }
 
@@ -48,6 +48,6 @@ public class budgetService {
     }
 
     public void deleteClient(int id){
-        budgetRepository.remove(id);
+        budgetRepository.delete(id);
     }
 }

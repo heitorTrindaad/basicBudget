@@ -7,6 +7,9 @@ public class Budget {
     private BigDecimal quantity;
     private String measurement;
 
+    public Budget() {
+    }
+
     public Budget(BigDecimal quantity, String measurement) {
         this.quantity = quantity;
         this.measurement = measurement;
