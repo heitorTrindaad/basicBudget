@@ -16,6 +16,11 @@ public class Sale {
     public Sale() {
     }
 
+    public Sale(LocalDate date, BigDecimal totalAmount) {
+        this.date = date;
+        this.totalAmount = totalAmount;
+    }
+
     public Sale(Client client) {
         this.date = LocalDate.now();
         this.client = client;

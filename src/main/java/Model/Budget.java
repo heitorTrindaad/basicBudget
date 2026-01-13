@@ -13,11 +13,9 @@ public class Budget {
     public Budget() {
     }
 
-    public Budget(BigDecimal quantity, String measurement, Product product, Sale sale) {
+    public Budget(BigDecimal quantity, String measurement) {
         this.quantity = quantity;
         this.measurement = measurement;
-        this.product = product;
-        this.sale = sale;
     }
 
     public BigDecimal getSubTotal(){
@@ -30,6 +28,11 @@ public class Budget {
 
     public Sale getSale() {
         return sale;
+    }
+
+    @Override
+    public String toString() {
+        return "Orçamento #" + id;
     }
 
     public int getId() { return id; }

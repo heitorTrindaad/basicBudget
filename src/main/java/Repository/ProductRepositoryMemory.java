@@ -1,15 +1,14 @@
 package Repository;
 
 import Model.Product;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ProductRepositoryMemory implements ProductRepository {
 
-    private final List<Product> products = new ArrayList<>();
-    private final AtomicInteger idCounter = new AtomicInteger(1);
+    private static final List<Product> products = new ArrayList<>();
+    private static final AtomicInteger idCounter = new AtomicInteger(1);
 
     public Product save(Product product){
         if(product.getId() == 0){
@@ -27,8 +26,9 @@ public class ProductRepositoryMemory implements ProductRepository {
     }
 
     public List<Product> findAll(){
-        return products;
+        return new ArrayList<>(products); // evita acesso direto à lista
     }
+
     public void setAll(List<Product> list){
         products.clear();
         products.addAll(list);
@@ -41,9 +41,7 @@ public class ProductRepositoryMemory implements ProductRepository {
         idCounter.set(maiorId + 1);
     }
 
-
     public void delete(int id){
         products.removeIf(p -> p.getId() == id);
     }
 }
-

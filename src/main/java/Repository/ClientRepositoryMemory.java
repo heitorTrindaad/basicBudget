@@ -8,8 +8,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClientRepositoryMemory implements ClientRepository {
 
-    private final List<Client> clients = new ArrayList<>();
-    private final AtomicInteger idCounter = new AtomicInteger(1);
+    private static final List<Client> clients = new ArrayList<>();
+    private static final AtomicInteger idCounter = new AtomicInteger(1);
 
     public Client save(Client client) {
         if(client.getId() == 0){

@@ -1,7 +1,7 @@
-package View;
+package App;
 
 public class Launcher {
     public static void main(String[] args) {
-        MainApp.main(args);
+        App.MainApp.main(args);
     }
 }
