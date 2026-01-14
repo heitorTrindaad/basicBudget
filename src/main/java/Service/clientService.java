@@ -11,14 +11,14 @@ public class clientService {
     }
 
 
-    public Client createClient(String name, String email){
+    public Client createClient(String name, String email, String cnpj, String telefone) {
         if (name==null || name.isBlank()){
             throw new IllegalArgumentException("Client name wasnt filled.");
         } //hi
         if (email==null || email.isBlank()) {
             throw new IllegalArgumentException("Invalid Email.");
         }
-        Client client = new Client(name, email);
+        Client client = new Client(name, email, cnpj, telefone);
         client.setName(name.trim());
         client.setEmail(email.trim());
 

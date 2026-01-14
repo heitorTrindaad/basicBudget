@@ -17,8 +17,14 @@
         <Label text="Nome:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <TextField fx:id="txtNome" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
+        <Label text="Telefone:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtTelefone" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
         <Label text="Email:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
         <TextField fx:id="txtEmail" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Cnpj:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtCnpj" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
     </GridPane>
 
@@ -31,6 +37,8 @@
         <columns>
             <TableColumn text="ID" fx:id="colId"/>
             <TableColumn text="Nome" fx:id="colNome"/>
+            <TableColumn text="Telefone" fx:id="colTelefone"/>
+            <TableColumn text="Cnpj" fx:id="colCnpj"/>
             <TableColumn text="Email" fx:id="colEmail"/>
         </columns>
     </TableView>

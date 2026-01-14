@@ -13,5 +13,10 @@
 
     <Button text="Salvar" onAction="#salvar"/>
 
-    <ListView fx:id="lista"/>
+    <TableView fx:id="tblProduct" prefHeight="250">
+        <columns>
+            <TableColumn text="Nome" fx:id="colNome"/>
+            <TableColumn text="Preço" fx:id="colPreco"/>
+        </columns>
+    </TableView>
 </VBox>
