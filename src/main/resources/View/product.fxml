@@ -10,6 +10,7 @@
 
     <TextField fx:id="txtNome" promptText="Nome do produto"/>
     <TextField fx:id="txtPreco" promptText="Preço"/>
+    <TextField fx:id="txtCodigo" promptText="Código"/>
 
     <Button text="Salvar" onAction="#salvar"/>
 
@@ -17,6 +18,7 @@
         <columns>
             <TableColumn text="Nome" fx:id="colNome"/>
             <TableColumn text="Preço" fx:id="colPreco"/>
+            <TableColumn text="Código" fx:id="colCodigo"/>
         </columns>
     </TableView>
 </VBox>

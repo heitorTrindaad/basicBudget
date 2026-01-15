@@ -16,10 +16,12 @@ public class ProductController {
 
     @FXML private TextField txtNome;
     @FXML private TextField txtPreco;
+    @FXML private TextField txtCodigo;
 
     @FXML private TableView<Product> tblProduct;
     @FXML private TableColumn<Product, String> colNome;
     @FXML private TableColumn<Product, String> colPreco;
+    @FXML private TableColumn<Product, String> colCodigo;
 
     private final ProductRepositoryMemory repo =
             new ProductRepositoryMemory();
@@ -28,7 +30,7 @@ public class ProductController {
     public void initialize() {
         colNome.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPreco.setCellValueFactory(new PropertyValueFactory<>("price"));
-
+        colCodigo.setCellValueFactory(new PropertyValueFactory<>("productCode"));
         atualizarLista();
     }
 
@@ -47,6 +49,7 @@ public class ProductController {
         } catch (ParseException e) {
 
         }
+        p.setProductCode(Integer.parseInt(txtCodigo.getText()));
         limpar();
         repo.save(p);
         atualizarLista();
@@ -56,7 +59,7 @@ public class ProductController {
     public void limpar() {
         txtNome.clear();
         txtPreco.clear();
-
+        txtCodigo.clear();
     }
 
     private void atualizarLista() {

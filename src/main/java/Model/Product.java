@@ -6,13 +6,15 @@ public class Product {
     private int id;
     private String name;
     private BigDecimal price;
+    private int productCode;
 
     public Product() {
     }
 
-    public Product(String name, BigDecimal price) {
+    public Product(String name, BigDecimal price, int productCode) {
         this.name = name;
         this.price = price;
+        this.productCode = productCode;
     }
 
     @Override
@@ -20,6 +22,13 @@ public class Product {
         return name;
     }
 
+    public int getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(int productCode) {
+        this.productCode = productCode;
+    }
 
     public int getId() {
         return id;
