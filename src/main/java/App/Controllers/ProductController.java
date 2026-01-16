@@ -22,6 +22,7 @@ public class ProductController {
     @FXML private TableColumn<Product, String> colNome;
     @FXML private TableColumn<Product, String> colPreco;
     @FXML private TableColumn<Product, String> colCodigo;
+    @FXML private TableColumn<Product, String> colMeasurement;
 
     private final ProductRepositoryMemory repo =
             new ProductRepositoryMemory();
@@ -46,9 +47,8 @@ public class ProductController {
         try {
             BigDecimal preco = (BigDecimal) df.parse(txtPreco.getText());
             p.setPrice(preco);
-        } catch (ParseException e) {
+        } catch (ParseException e) {}
 
-        }
         p.setProductCode(Integer.parseInt(txtCodigo.getText()));
         limpar();
         repo.save(p);
