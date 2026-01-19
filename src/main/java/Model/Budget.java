@@ -3,12 +3,22 @@ package Model;
 import java.math.BigDecimal;
 
 public class Budget {
+
     private int id;
     private BigDecimal quantity;
     private String measurement;
 
     private Product product;
+    private Client client;
+    private BigDecimal total;
     private Sale sale;
+
+    @Override
+    public String toString() {
+        return "Orçamento #" + id +
+                " | Cliente: " + client.getName() +
+                " | Total: R$ " + total;
+    }
 
     public Budget() {
     }
@@ -16,6 +26,30 @@ public class Budget {
     public Budget(BigDecimal quantity, String measurement) {
         this.quantity = quantity;
         this.measurement = measurement;
+    }
+
+    public void setSale(Sale sale) {
+        this.sale = sale;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public BigDecimal getSubTotal(){
@@ -28,11 +62,6 @@ public class Budget {
 
     public Sale getSale() {
         return sale;
-    }
-
-    @Override
-    public String toString() {
-        return "Orçamento #" + id;
     }
 
     public int getId() { return id; }

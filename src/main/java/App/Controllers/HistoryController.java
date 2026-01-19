@@ -9,7 +9,8 @@ public class HistoryController {
     @FXML
     private ListView<String> listHistory;
 
-    private BudgetRepositoryMemory repo = new BudgetRepositoryMemory();
+    private BudgetRepositoryMemory repo =
+            BudgetRepositoryMemory.getInstance();
 
     @FXML
     public void initialize() {

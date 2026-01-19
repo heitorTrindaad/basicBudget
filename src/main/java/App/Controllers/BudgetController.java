@@ -1,7 +1,9 @@
 package App.Controllers;
 
+import Model.Budget;
 import Model.Client;
 import Model.Product;
+import Repository.BudgetRepositoryMemory;
 import Repository.ClientRepositoryMemory;
 import Repository.ProductRepositoryMemory;
 import javafx.fxml.FXML;
@@ -24,6 +26,9 @@ public class BudgetController {
     private final ProductRepositoryMemory repo =
             new ProductRepositoryMemory();
 
+    private final BudgetRepositoryMemory budgetRepo =
+            BudgetRepositoryMemory.getInstance();
+
     private BigDecimal total = BigDecimal.ZERO;
 
     @FXML
@@ -39,28 +44,37 @@ public class BudgetController {
     public void add() {
         Product p = cbProduto.getValue();
 
-        // 1. Troque de int para BigDecimal para aceitar decimais (ex: 1.5)
         BigDecimal qtd = new BigDecimal(txtQtd.getText().replace(",", "."));
 
-        // 2. O cálculo do subtotal continua o mesmo (BigDecimal x BigDecimal)
         BigDecimal subtotal = p.getPrice().multiply(qtd);
 
-        // 3. Adiciona na lista (formate se desejar mais detalhes)
         lista.getItems().add(
                 p.getName() + " x" + qtd + " = " + subtotal);
 
-        // 4. Atualiza o total acumulado
         total = total.add(subtotal);
         lblTotal.setText("Total: R$ " + total);
     }
 
     @FXML
     public void salvar() {
+
+        Budget b = new Budget();
+
+        b.setClient(cbClientes.getValue());
+        b.setTotal(total);
+
+        budgetRepo.save(b);
+
         Alert a = new Alert(Alert.AlertType.INFORMATION);
         a.setTitle("Orçamento");
         a.setHeaderText(null);
         a.setContentText(
                 "Orçamento salvo!\nTotal: R$ " + total);
         a.show();
+
+        // limpa tela
+        lista.getItems().clear();
+        total = BigDecimal.ZERO;
+        lblTotal.setText("Total: R$ 0.00");
     }
 }
