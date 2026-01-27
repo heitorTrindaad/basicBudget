@@ -8,17 +8,29 @@
       fx:controller="App.Controllers.ProductController"
       spacing="10" style="-fx-padding:20;">
 
+
+
     <TextField fx:id="txtNome" promptText="Nome do produto"/>
     <TextField fx:id="txtPreco" promptText="Preço"/>
     <TextField fx:id="txtCodigo" promptText="Código"/>
+    <MenuButton fx:id="mbMeasurement" text="Selecione a Medida">
+        <items>
+            <MenuItem text="Cm" onAction="#selecionarMedida" />
+            <MenuItem text="M" onAction="#selecionarMedida" />
+            <MenuItem text="Kg" onAction="#selecionarMedida" />
+            <MenuItem text="Un" onAction="#selecionarMedida" />
+        </items>
+    </MenuButton>
+
 
     <Button text="Salvar" onAction="#salvar"/>
 
-    <TableView fx:id="tblProduct" prefHeight="250">
+    <TableView  fx:id="tblProduct" onMouseClicked="#selecionarItem" prefHeight="250">
         <columns>
             <TableColumn text="Nome" fx:id="colNome"/>
             <TableColumn text="Preço" fx:id="colPreco"/>
             <TableColumn text="Código" fx:id="colCodigo"/>
+            <TableColumn text="Medida" fx:id="colMedida"/>
         </columns>
     </TableView>
 </VBox>

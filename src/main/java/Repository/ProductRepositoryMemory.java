@@ -44,4 +44,13 @@ public class ProductRepositoryMemory implements ProductRepository {
     public void delete(int id){
         products.removeIf(p -> p.getId() == id);
     }
+
+    public void update(Product product) {
+        for (int i = 0; i < products.size(); i++) {
+            if (products.get(i).getId() == product.getId()) {
+                products.set(i, product);
+                break;
+            }
+        }
+    }
 }
