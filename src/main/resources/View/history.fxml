@@ -10,10 +10,22 @@
       style="-fx-padding:20;">
 
     <Label text="Histórico de Orçamentos"
-           style="-fx-font-size:18;"/>
+           style="-fx-font-size:18; -fx-font-weight: bold;"/>
 
-    <ListView fx:id="listHistory"/>
+    <ListView fx:id="listHistory" VBox.vgrow="ALWAYS"/>
 
-    <Button text="Ver detalhes"/>
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Ver Detalhes"
+                onAction="#verDetalhes"
+                style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
+
+        <Button text="Editar"
+                onAction="#editarOrcamento"
+                style="-fx-background-color: #f1c40f; -fx-text-fill: black;"/>
+
+        <Button text="Excluir"
+                onAction="#excluirOrcamento"
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
+    </HBox>
 
 </VBox>

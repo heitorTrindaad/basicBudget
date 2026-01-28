@@ -62,6 +62,7 @@ public class BudgetController {
 
         b.setClient(cbClientes.getValue());
         b.setTotal(total);
+        b.setItensRelatorio(new java.util.ArrayList<>(lista.getItems()));
 
         budgetRepo.save(b);
 
@@ -72,7 +73,7 @@ public class BudgetController {
                 "Orçamento salvo!\nTotal: R$ " + total);
         a.show();
 
-        // limpa tela
+
         lista.getItems().clear();
         total = BigDecimal.ZERO;
         lblTotal.setText("Total: R$ 0.00");

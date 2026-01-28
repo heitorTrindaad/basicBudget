@@ -13,6 +13,8 @@ public class Budget {
     private BigDecimal total;
     private Sale sale;
 
+    private java.util.List<String> itensRelatorio = new java.util.ArrayList<>();
+
     @Override
     public String toString() {
         return "Orçamento #" + id +
@@ -83,4 +85,8 @@ public class Budget {
     public void setMeasurement(String measurement) {
         this.measurement = measurement;
     }
+
+    public java.util.List<String> getItensRelatorio() { return itensRelatorio; }
+
+    public void setItensRelatorio(java.util.List<String> itens) { this.itensRelatorio = itens; }
 }

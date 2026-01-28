@@ -65,14 +65,12 @@ public class ProductController {
     public void selecionarItem() {
         Product p = tblProduct.getSelectionModel().getSelectedItem();
         if (p != null) {
-            produtoSendoEditado = p; // Guarda a referência do produto selecionado
+            produtoSendoEditado = p;
 
-            // Preenche os campos
             txtNome.setText(p.getName());
             txtPreco.setText(p.getPrice().toString().replace(".", ","));
             txtCodigo.setText(String.valueOf(p.getProductCode()));
 
-            // Atualiza o MenuButton
             medidaSelecionada = p.getMeasurement();
             mbMeasurement.setText(medidaSelecionada);
         }

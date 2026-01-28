@@ -51,11 +51,12 @@ public class BudgetRepositoryMemory implements BudgetRepository {
         idCounter.set(maiorId + 1);
     }
 
-    public void update(int id, Budget budget){
-        Budget existing = findById(id);
-        if(existing != null){
-            existing.setMeasurement(budget.getMeasurement());
-            existing.setQuantity(budget.getQuantity());
+    public void update(int id, Budget updatedBudget) {
+        for (int i = 0; i < budgets.size(); i++) {
+            if (budgets.get(i).getId() == id) {
+                budgets.set(i, updatedBudget);
+                return;
+            }
         }
     }
 
