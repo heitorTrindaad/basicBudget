@@ -48,7 +48,6 @@ public class HistoryController {
 
     @FXML
     public void verDetalhes() {
-
         Budget selecionado = listHistory.getSelectionModel().getSelectedItem();
         if (selecionado == null) return;
 
