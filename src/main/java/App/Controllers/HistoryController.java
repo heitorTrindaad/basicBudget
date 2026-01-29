@@ -12,7 +12,7 @@ import java.util.Optional;
 public class HistoryController {
 
     @FXML
-    private ListView<Budget> listHistory; // Alterado para o objeto Budget
+    private ListView<Budget> listHistory;
 
     private BudgetRepositoryMemory repo = BudgetRepositoryMemory.getInstance();
 
@@ -26,7 +26,6 @@ public class HistoryController {
         listHistory.getItems().addAll(repo.findAll());
     }
 
-    // --- FUNÇÃO: EXCLUIR ---
     @FXML
     public void excluirOrcamento() {
         Budget selecionado = listHistory.getSelectionModel().getSelectedItem();
@@ -42,55 +41,65 @@ public class HistoryController {
 
         Optional<ButtonType> result = confirmacao.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            repo.delete(selecionado.getId()); // Usa o método delete que você já tem
+            repo.delete(selecionado.getId());
             atualizarLista();
         }
     }
 
     @FXML
     public void verDetalhes() {
+
         Budget selecionado = listHistory.getSelectionModel().getSelectedItem();
         if (selecionado == null) return;
 
-        // Monta a string com os itens salvos
         StringBuilder sb = new StringBuilder();
         sb.append("Cliente: ").append(selecionado.getClient().getName()).append("\n");
-        sb.append("--------------------------\n");
 
-        // Pega a lista de itens que salvamos no passo anterior
-        for (String item : selecionado.getItensRelatorio()) {
-            sb.append(item).append("\n");
+        // Percorre os novos Subgrupos
+        for (Model.BudgetSubgroup grupo : selecionado.getSubgroups()) {
+            sb.append("\n=== ").append(grupo.getName().toUpperCase()).append(" ===\n");
+
+            for (String item : grupo.getItems()) {
+                sb.append("  • ").append(item).append("\n");
+            }
+            sb.append("Subtotal do Grupo: R$ ").append(grupo.getSubtotal()).append("\n");
         }
 
-        sb.append("--------------------------\n");
-        sb.append("Total: R$ ").append(selecionado.getTotal());
+        sb.append("\n--------------------------\n");
+        sb.append("TOTAL GERAL: R$ ").append(selecionado.getTotal());
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Itens do Orçamento #" + selecionado.getId());
-        alert.setHeaderText("Produtos e Quantidades");
-        alert.setContentText(sb.toString());
+        alert.setTitle("Detalhes do Orçamento #" + selecionado.getId());
+        alert.setHeaderText(null);
+
+        // Usamos um ScrollPane para caso o texto seja muito longo
+        TextArea area = new TextArea(sb.toString());
+        area.setEditable(false);
+        area.setWrapText(true);
+        alert.getDialogPane().setContent(area);
+
         alert.showAndWait();
     }
 
     @FXML
     public void editarOrcamento() {
         Budget selecionado = listHistory.getSelectionModel().getSelectedItem();
+        if (selecionado == null) return;
 
-        if (selecionado == null) {
-            mostrarAviso("Selecione um orçamento para editar.");
-            return;
-        }
-
-        // Criando um diálogo customizado para editar Itens e Valor
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Editar Orçamento #" + selecionado.getId());
-        dialog.setHeaderText("Altere os itens e o valor total");
 
-        // Criando os campos
-        TextArea txtItens = new TextArea(String.join("\n", selecionado.getItensRelatorio()));
+        StringBuilder itensTexto = new StringBuilder();
+        for(Model.BudgetSubgroup g : selecionado.getSubgroups()) {
+            for(String item : g.getItems()) {
+                itensTexto.append(item).append("\n");
+            }
+        }
+
+        TextArea txtItens = new TextArea(itensTexto.toString());
         TextField txtTotal = new TextField(selecionado.getTotal().toString());
 
-        VBox content = new VBox(10, new Label("Itens:"), txtItens, new Label("Valor Total (R$):"), txtTotal);
+        VBox content = new VBox(10, new Label("Itens (Simples):"), txtItens, new Label("Valor Total:"), txtTotal);
         dialog.getDialogPane().setContent(content);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
@@ -98,20 +107,22 @@ public class HistoryController {
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                // 1. Atualiza os Itens
-                selecionado.setItensRelatorio(java.util.Arrays.asList(txtItens.getText().split("\n")));
 
-                // 2. Atualiza o Valor Total
-                BigDecimal novoTotal = new BigDecimal(txtTotal.getText().replace(",", "."));
-                selecionado.setTotal(novoTotal);
+                Model.BudgetSubgroup grupoEditado = new Model.BudgetSubgroup("Editado");
+                for (String linha : txtItens.getText().split("\n")) {
+                    if (!linha.trim().isEmpty()) {
+                        grupoEditado.addItem(linha, BigDecimal.ZERO); // Valor zero pois o total é manual aqui
+                    }
+                }
 
-                // 3. Salva no Repositório
+                selecionado.getSubgroups().clear();
+                selecionado.getSubgroups().add(grupoEditado);
+                selecionado.setTotal(new BigDecimal(txtTotal.getText().replace(",", ".")));
+
                 repo.update(selecionado.getId(), selecionado);
-
-                atualizarLista(); // Atualiza a ListView
-
+                atualizarLista();
             } catch (Exception e) {
-                mostrarAviso("Erro ao salvar: Verifique se o valor total é um número válido.");
+                mostrarAviso("Erro na conversão dos valores.");
             }
         }
     }

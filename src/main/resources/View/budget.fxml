@@ -1,25 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.*?>
 
-<VBox xmlns="http://javafx.com/javafx/21"
+<VBox spacing="10" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="App.Controllers.BudgetController">
 
     <Label text="Cliente:"/>
+    <ComboBox fx:id="cbClientes" prefWidth="250"/>
 
-    <ComboBox fx:id="cbClientes"
-              prefWidth="250"/>
+    <Separator/>
 
-    <ComboBox fx:id="cbProduto" promptText="Produto"/>
-    <TextField fx:id="txtQtd" promptText="Quantidade"/>
+    <HBox spacing="5">
+        <TextField fx:id="txtNomeGrupo" promptText="Nome do Subgrupo (ex: Peças)"/>
+        <Button text="Criar Grupo" onAction="#criarNovoGrupo"/>
+    </HBox>
 
-    <Button text="Adicionar" onAction="#add"/>
+    <Separator/>
 
-    <ListView fx:id="lista"/>
+    <HBox spacing="5">
+        <ComboBox fx:id="cbProduto" promptText="Produto"/>
+        <TextField fx:id="txtQtd" promptText="Qtd"/>
+        <Button text="Adicionar ao Grupo" onAction="#add"/>
+    </HBox>
 
-    <Label fx:id="lblTotal"/>
+    <ListView fx:id="listaGrupos" prefHeight="300"/>
 
-    <Button text="Salvar Orçamento" onAction="#salvar"/>
+    <Label fx:id="lblTotal" style="-fx-font-weight: bold; -fx-font-size: 16;" text="Total Geral: R$ 0.00"/>
+
+    <Button text="Salvar Orçamento" onAction="#salvar"
+            style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-cursor: hand;"/>
 </VBox>

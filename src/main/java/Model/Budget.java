@@ -1,6 +1,8 @@
 package Model;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Budget {
 
@@ -13,7 +15,7 @@ public class Budget {
     private BigDecimal total;
     private Sale sale;
 
-    private java.util.List<String> itensRelatorio = new java.util.ArrayList<>();
+    private List<BudgetSubgroup> subgroups = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -86,7 +88,7 @@ public class Budget {
         this.measurement = measurement;
     }
 
-    public java.util.List<String> getItensRelatorio() { return itensRelatorio; }
+    public List<BudgetSubgroup> getSubgroups() { return subgroups; }
 
-    public void setItensRelatorio(java.util.List<String> itens) { this.itensRelatorio = itens; }
+    public void setSubgroups(List<BudgetSubgroup> subgroups) { this.subgroups = subgroups; }
 }
