@@ -58,5 +58,6 @@ public class ClientController {
     private void atualizarLista() {
         tableClientes.getItems().setAll(repository.findAll());
 
+
     }
 }

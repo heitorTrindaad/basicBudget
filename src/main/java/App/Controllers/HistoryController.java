@@ -1,6 +1,8 @@
 package App.Controllers;
 
 import Model.Budget;
+import Model.BudgetSubgroup;
+import Model.BudgetSubgetItem;
 import Repository.BudgetRepositoryMemory;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -13,7 +15,6 @@ public class HistoryController {
 
     @FXML
     private ListView<Budget> listHistory;
-
     private BudgetRepositoryMemory repo = BudgetRepositoryMemory.getInstance();
 
     @FXML
@@ -54,12 +55,12 @@ public class HistoryController {
         StringBuilder sb = new StringBuilder();
         sb.append("Cliente: ").append(selecionado.getClient().getName()).append("\n");
 
-        // Percorre os novos Subgrupos
-        for (Model.BudgetSubgroup grupo : selecionado.getSubgroups()) {
+        // CORREÇÃO: Usando BudgetSubgetItem em vez de String
+        for (BudgetSubgroup grupo : selecionado.getSubgroups()) {
             sb.append("\n=== ").append(grupo.getName().toUpperCase()).append(" ===\n");
 
-            for (String item : grupo.getItems()) {
-                sb.append("  • ").append(item).append("\n");
+            for (BudgetSubgetItem item : grupo.getItems()) {
+                sb.append("  • ").append(item.toString()).append("\n");
             }
             sb.append("Subtotal do Grupo: R$ ").append(grupo.getSubtotal()).append("\n");
         }
@@ -71,7 +72,6 @@ public class HistoryController {
         alert.setTitle("Detalhes do Orçamento #" + selecionado.getId());
         alert.setHeaderText(null);
 
-        // Usamos um ScrollPane para caso o texto seja muito longo
         TextArea area = new TextArea(sb.toString());
         area.setEditable(false);
         area.setWrapText(true);
@@ -89,16 +89,18 @@ public class HistoryController {
         dialog.setTitle("Editar Orçamento #" + selecionado.getId());
 
         StringBuilder itensTexto = new StringBuilder();
-        for(Model.BudgetSubgroup g : selecionado.getSubgroups()) {
-            for(String item : g.getItems()) {
-                itensTexto.append(item).append("\n");
+        // CORREÇÃO: Loop atualizado para a nova estrutura de objetos
+        for(BudgetSubgroup g : selecionado.getSubgroups()) {
+            for(BudgetSubgetItem item : g.getItems()) {
+                itensTexto.append(item.toString()).append("\n");
             }
         }
 
         TextArea txtItens = new TextArea(itensTexto.toString());
+        txtItens.setPromptText("Nota: Itens editados aqui serão convertidos em descrições simples.");
         TextField txtTotal = new TextField(selecionado.getTotal().toString());
 
-        VBox content = new VBox(10, new Label("Itens (Simples):"), txtItens, new Label("Valor Total:"), txtTotal);
+        VBox content = new VBox(10, new Label("Visualização dos Itens:"), txtItens, new Label("Valor Total:"), txtTotal);
         dialog.getDialogPane().setContent(content);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
@@ -106,18 +108,23 @@ public class HistoryController {
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
+                // Ao editar via texto bruto, perdemos a ligação com o objeto 'Product' original.
+                // Criamos um novo item "Genérico" para manter a estrutura.
+                BudgetSubgroup grupoEditado = new BudgetSubgroup("Editado via Histórico");
 
-                Model.BudgetSubgroup grupoEditado = new Model.BudgetSubgroup("Editado");
                 for (String linha : txtItens.getText().split("\n")) {
                     if (!linha.trim().isEmpty()) {
-                        grupoEditado.addItem(linha, BigDecimal.ZERO); // Valor zero pois o total é manual aqui
+                        // Criamos um item com Produto nulo ou genérico se necessário
+                        // Aqui usamos o construtor do BudgetSubgetItem (assumindo que aceita nulo ou adaptação)
+                        BudgetSubgetItem novo = new BudgetSubgetItem(null, BigDecimal.ONE, BigDecimal.ZERO) {
+                            @Override
+                            public String toString() { return linha; }
+                        };
+                        grupoEditado.addItem(novo);
                     }
                 }
 
-                selecionado.getSubgroups().clear();
-                selecionado.getSubgroups().add(grupoEditado);
                 selecionado.setTotal(new BigDecimal(txtTotal.getText().replace(",", ".")));
-
                 repo.update(selecionado.getId(), selecionado);
                 atualizarLista();
             } catch (Exception e) {

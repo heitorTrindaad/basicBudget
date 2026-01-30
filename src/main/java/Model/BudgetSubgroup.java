@@ -6,25 +6,25 @@ import java.util.List;
 
 public class BudgetSubgroup {
     private String name;
-    private List<String> items = new ArrayList<>();
-    private BigDecimal subtotal = BigDecimal.ZERO;
+    private List<BudgetSubgetItem> items = new ArrayList<>();
 
-    public BudgetSubgroup(String name) {
-        this.name = name;
+    public BudgetSubgroup(String name) { this.name = name; }
+
+    public void addItem(BudgetSubgetItem item) {
+        this.items.add(item);
     }
 
-    public void addItem(String detail, BigDecimal value) {
-        items.add(detail);
-        this.subtotal = this.subtotal.add(value);
+    public BigDecimal getSubtotal() {
+        return items.stream()
+                .map(BudgetSubgetItem::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    // Getters
     public String getName() { return name; }
-    public List<String> getItems() { return items; }
-    public BigDecimal getSubtotal() { return subtotal; }
+    public List<BudgetSubgetItem> getItems() { return items; }
 
     @Override
     public String toString() {
-        return "GRUPO: " + name + " | Subtotal: R$ " + subtotal;
+        return "GRUPO: " + name + " | Total: R$ " + getSubtotal();
     }
 }
