@@ -16,7 +16,7 @@
 
     <Label text="Estrutura do Orçamento:" style="-fx-font-weight: bold;"/>
     <HBox spacing="10">
-        <TextField fx:id="txtNomeGrupo" promptText="Nome do Subgrupo (ex: Ferragens)" HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="txtNomeGrupo" promptText="Nome do Subgrupo (ex: Quadro 01)" HBox.hgrow="ALWAYS"/>
         <Button text="Criar Novo Grupo" onAction="#criarNovoGrupo"
                 style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand;"/>
     </HBox>

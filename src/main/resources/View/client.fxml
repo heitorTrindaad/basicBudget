@@ -35,11 +35,11 @@
 
     <TableView fx:id="tableClientes" prefHeight="250">
         <columns>
-            <TableColumn text="ID" fx:id="colId"/>
-            <TableColumn text="Nome" fx:id="colNome"/>
-            <TableColumn text="Telefone" fx:id="colTelefone"/>
-            <TableColumn text="Cnpj" fx:id="colCnpj"/>
-            <TableColumn text="Email" fx:id="colEmail"/>
+            <TableColumn text="ID" fx:id="colId" prefWidth="50" style="-fx-alignment: CENTER;"/>
+            <TableColumn text="Nome" fx:id="colNome" prefWidth="150" style="-fx-alignment: CENTER;"/>
+            <TableColumn text="Telefone" fx:id="colTelefone" prefWidth="150" style="-fx-alignment: CENTER;"/>
+            <TableColumn text="Cnpj" fx:id="colCnpj" prefWidth="150" style="-fx-alignment: CENTER;"/>
+            <TableColumn text="Email" fx:id="colEmail" prefWidth="150" style="-fx-alignment: CENTER;"/>
         </columns>
     </TableView>
 
