@@ -4,6 +4,9 @@ import Model.Budget;
 import Model.BudgetSubgroup;
 import Model.BudgetSubgetItem;
 import Repository.BudgetRepositoryMemory;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -15,16 +18,68 @@ public class HistoryController {
 
     @FXML
     private ListView<Budget> listHistory;
+
+    @FXML
+    private TextField txtPesquisa;
+
     private BudgetRepositoryMemory repo = BudgetRepositoryMemory.getInstance();
+    private ObservableList<Budget> masterData = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
         atualizarLista();
+
+        // 1. Criamos a FilteredList envolvendo os dados originais
+        FilteredList<Budget> filteredData = new FilteredList<>(masterData, p -> true);
+
+        // 2. Ouvinte de texto (dispara sempre que o usuário digita algo)
+        txtPesquisa.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(budget -> {
+                // Se o campo estiver vazio, mostra tudo
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                // Regras de busca: Nome do cliente ou ID do orçamento
+                if (budget.getClient().getName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (String.valueOf(budget.getId()).contains(lowerCaseFilter)) {
+                    return true;
+                }
+
+                return false; // Não encontrou nada
+            });
+        });
+
+        // 3. Define a lista filtrada como a fonte da ListView
+        listHistory.setItems(filteredData);
+
+        listHistory.setCellFactory(lv -> new ListCell<Budget>() {
+            @Override
+            protected void updateItem(Budget item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    // Formatação: #01 - João Silva (R$ 1500.00)
+                    setText(String.format("#%d - %s (R$ %s)",
+                            item.getId(),
+                            item.getClient().getName(),
+                            item.getTotal().toString()));
+                }
+            }
+        });
     }
 
     public void atualizarLista() {
-        listHistory.getItems().clear();
-        listHistory.getItems().addAll(repo.findAll());
+        // 1. Buscamos os dados atualizados do repositório
+        var dadosDoRepo = repo.findAll();
+
+        // 2. Atualizamos apenas a masterData.
+        // A FilteredList e a ListView perceberão a mudança sozinhas.
+        masterData.setAll(dadosDoRepo);
     }
 
     @FXML
@@ -55,7 +110,6 @@ public class HistoryController {
         StringBuilder sb = new StringBuilder();
         sb.append("Cliente: ").append(selecionado.getClient().getName()).append("\n");
 
-        // CORREÇÃO: Usando BudgetSubgetItem em vez de String
         for (BudgetSubgroup grupo : selecionado.getSubgroups()) {
             sb.append("\n=== ").append(grupo.getName().toUpperCase()).append(" ===\n");
 
@@ -89,7 +143,6 @@ public class HistoryController {
         dialog.setTitle("Editar Orçamento #" + selecionado.getId());
 
         StringBuilder itensTexto = new StringBuilder();
-        // CORREÇÃO: Loop atualizado para a nova estrutura de objetos
         for(BudgetSubgroup g : selecionado.getSubgroups()) {
             for(BudgetSubgetItem item : g.getItems()) {
                 itensTexto.append(item.toString()).append("\n");
@@ -108,14 +161,10 @@ public class HistoryController {
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                // Ao editar via texto bruto, perdemos a ligação com o objeto 'Product' original.
-                // Criamos um novo item "Genérico" para manter a estrutura.
                 BudgetSubgroup grupoEditado = new BudgetSubgroup("Editado via Histórico");
 
                 for (String linha : txtItens.getText().split("\n")) {
                     if (!linha.trim().isEmpty()) {
-                        // Criamos um item com Produto nulo ou genérico se necessário
-                        // Aqui usamos o construtor do BudgetSubgetItem (assumindo que aceita nulo ou adaptação)
                         BudgetSubgetItem novo = new BudgetSubgetItem(null, BigDecimal.ONE, BigDecimal.ZERO) {
                             @Override
                             public String toString() { return linha; }

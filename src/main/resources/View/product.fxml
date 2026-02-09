@@ -8,8 +8,6 @@
       fx:controller="App.Controllers.ProductController"
       spacing="10" style="-fx-padding:20;">
 
-
-
     <TextField fx:id="txtNome" promptText="Nome do produto"/>
     <TextField fx:id="txtPreco" promptText="Preço"/>
     <TextField fx:id="txtCodigo" promptText="Código"/>

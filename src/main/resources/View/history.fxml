@@ -12,6 +12,10 @@
     <Label text="Histórico de Orçamentos"
            style="-fx-font-size:18; -fx-font-weight: bold;"/>
 
+    <TextField fx:id="txtPesquisa"
+               promptText="🔍 Pesquisar por cliente ou ID do orçamento..."
+               style="-fx-padding: 8; -fx-background-radius: 5;"/>
+
     <ListView fx:id="listHistory" VBox.vgrow="ALWAYS"/>
 
     <HBox spacing="10" alignment="CENTER_RIGHT">

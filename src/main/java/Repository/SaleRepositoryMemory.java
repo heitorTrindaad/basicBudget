@@ -47,4 +47,3 @@ public class SaleRepositoryMemory implements SaleRepository {
         sales.removeIf(s -> s.getId() == id);
     }
 }
-
