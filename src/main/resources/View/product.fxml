@@ -8,9 +8,20 @@
       fx:controller="App.Controllers.ProductController"
       spacing="10" style="-fx-padding:20;">
 
-    <TextField fx:id="txtNome" promptText="Nome do produto"/>
-    <TextField fx:id="txtPreco" promptText="Preço"/>
-    <TextField fx:id="txtCodigo" promptText="Código"/>
+    <GridPane hgap="10" vgap="10">
+
+        <Label text="Nome:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtNome"  GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Preço:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtPreco" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label  text="Código:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtCodigo" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    </GridPane>
+
+
     <MenuButton fx:id="mbMeasurement" text="Selecione a Medida">
         <items>
             <MenuItem text="Cm" onAction="#selecionarMedida" />
@@ -22,6 +33,7 @@
 
 
     <Button text="Salvar" onAction="#salvar"/>
+
 
     <TableView  fx:id="tblProduct" onMouseClicked="#selecionarItem" prefHeight="250">
         <columns>

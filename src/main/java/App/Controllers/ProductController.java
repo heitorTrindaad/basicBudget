@@ -89,7 +89,7 @@ public class ProductController {
         }
         p.setName(txtNome.getText());
         p.setMeasurement(medidaSelecionada);
-        p.setProductCode(Integer.parseInt(txtCodigo.getText()));
+        p.setProductCode(txtCodigo.getText());
         try {
             Locale brasil = new Locale("pt", "BR");
             DecimalFormat df = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(brasil));

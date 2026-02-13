@@ -12,10 +12,18 @@ public class ClientRepositoryMemory implements ClientRepository {
     private static final AtomicInteger idCounter = new AtomicInteger(1);
 
     public Client save(Client client) {
-        if(client.getId() == 0){
+        if (client.getId() == 0) {
             client.setId(idCounter.getAndIncrement());
+            clients.add(client);
+        } else {
+            for (int i = 0; i < clients.size(); i++) {
+                if (clients.get(i).getId() == client.getId()) {
+                    clients.set(i, client);
+                    return client;
+                }
+            }
+            clients.add(client);
         }
-        clients.add(client);
         return client;
     }
 

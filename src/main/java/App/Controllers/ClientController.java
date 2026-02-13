@@ -20,6 +20,9 @@ public class ClientController {
     @FXML private TableColumn<Client, String> colCnpj;
     @FXML private TableColumn<Client, String> colTelefone;
 
+    private Client clienteSelecionado;
+
+
     private final ClientRepositoryMemory repository =
             new ClientRepositoryMemory();
 
@@ -35,16 +38,33 @@ public class ClientController {
     }
 
     @FXML
+    public void carregarCliente() {
+        clienteSelecionado = tableClientes.getSelectionModel().getSelectedItem();
+
+        if (clienteSelecionado != null) {
+            txtNome.setText(clienteSelecionado.getName());
+            txtEmail.setText(clienteSelecionado.getEmail());
+            txtCnpj.setText(clienteSelecionado.getCnpj());
+            txtTelefone.setText(clienteSelecionado.getTelefone());
+        }
+    }
+
+    @FXML
     public void salvar() {
 
-        Client c = new Client();
-        c.setName(txtNome.getText());
-        c.setEmail(txtEmail.getText());
-        c.setCnpj(txtCnpj.getText());
-        c.setTelefone(txtTelefone.getText());
+        if(clienteSelecionado == null) {
+            clienteSelecionado = new Client();
+        }
 
-        repository.save(c);
+
+        clienteSelecionado.setName(txtNome.getText());
+        clienteSelecionado.setEmail(txtEmail.getText());
+        clienteSelecionado.setCnpj(txtCnpj.getText());
+        clienteSelecionado.setTelefone(txtTelefone.getText());
+
+        repository.save(clienteSelecionado);
         atualizarLista();
+        limpar();
     }
 
     @FXML
@@ -53,6 +73,7 @@ public class ClientController {
         txtEmail.clear();
         txtCnpj.clear();
         txtTelefone.clear();
+        clienteSelecionado = null;
     }
 
     private void atualizarLista() {

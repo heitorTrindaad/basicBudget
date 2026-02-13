@@ -4,6 +4,8 @@ import Model.*;
 import Repository.BudgetRepositoryMemory;
 import Repository.ClientRepositoryMemory;
 import Repository.ProductRepositoryMemory;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import java.math.BigDecimal;
@@ -15,9 +17,19 @@ public class BudgetController {
     @FXML private ComboBox<Product> cbProduto;
     @FXML private TextField txtQtd;
     @FXML private TextField txtNomeGrupo;
-    @FXML private TreeView<Object> treeOrcamento;
+    @FXML private TextField txtPorcentagemGrupo;
+
+    // CORREÇÃO: Alterado de TreeView para TreeTableView para suportar colunas
+    @FXML private TreeTableView<Object> treeOrcamento;
+
     @FXML private Label lblTotal;
     @FXML private ComboBox<Client> cbClientes;
+
+    @FXML private TreeTableColumn<Object, String> colDescricao;
+    @FXML private TreeTableColumn<Object, String> colMedida;
+    @FXML private TreeTableColumn<Object, String> colQtd;
+    @FXML private TreeTableColumn<Object, String> colValorUnit;
+    @FXML private TreeTableColumn<Object, String> colValorTotal;
 
     private final ClientRepositoryMemory clientRepo = new ClientRepositoryMemory();
     private final ProductRepositoryMemory repo = new ProductRepositoryMemory();
@@ -29,21 +41,91 @@ public class BudgetController {
     @FXML
     public void initialize() {
         cbClientes.getItems().addAll(clientRepo.findAll());
-        cbProduto.getItems().setAll(repo.findAll());
+
+        javafx.collections.ObservableList<Product> allProducts =
+                javafx.collections.FXCollections.observableArrayList(repo.findAll());
+        FilteredList<Product> filteredProducts = new FilteredList<>(allProducts, p -> true);
+
+        cbProduto.setEditable(true);
+        cbProduto.setItems(filteredProducts);
+        cbProduto.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+            Product selected = cbProduto.getSelectionModel().getSelectedItem();
+            if (selected != null && selected.getName().equals(newValue)) return;
+
+            filteredProducts.setPredicate(product -> {
+                if (newValue == null || newValue.isEmpty()) return true;
+                String filter = newValue.toLowerCase();
+                return product.getName().toLowerCase().contains(filter) ||
+                        (product.getProductCode() != null && product.getProductCode().toLowerCase().contains(filter));
+            });
+            if (!newValue.isEmpty()) cbProduto.show();
+        });
 
         treeOrcamento.setRoot(rootNode);
         treeOrcamento.setShowRoot(false);
+        configurarColunas();
+    }
+
+    private void configurarColunas() {
+        colDescricao.setCellValueFactory(param -> {
+            Object obj = param.getValue().getValue();
+            if (obj instanceof BudgetSubgroup) {
+                BudgetSubgroup g = (BudgetSubgroup) obj;
+                // Exibe o nome do grupo e a porcentagem aplicada
+                return new SimpleStringProperty(g.getName() + " (+" + g.getPercentage() + "%)");
+            }
+            if (obj instanceof BudgetSubgetItem) return new SimpleStringProperty(((BudgetSubgetItem) obj).getProduct().getName());
+            return null;
+        });
+
+        colMedida.setCellValueFactory(param -> {
+            Object obj = param.getValue().getValue();
+            if (obj instanceof BudgetSubgetItem) return new SimpleStringProperty(((BudgetSubgetItem) obj).getProduct().getMeasurement());
+            return new SimpleStringProperty("");
+        });
+
+        colQtd.setCellValueFactory(param -> {
+            Object obj = param.getValue().getValue();
+            if (obj instanceof BudgetSubgetItem) return new SimpleStringProperty(((BudgetSubgetItem) obj).getQuantity().toString());
+            return new SimpleStringProperty("");
+        });
+
+        colValorUnit.setCellValueFactory(param -> {
+            Object obj = param.getValue().getValue();
+            if (obj instanceof BudgetSubgetItem) return new SimpleStringProperty(String.format("R$ %.2f", ((BudgetSubgetItem) obj).getProduct().getPrice()));
+            return new SimpleStringProperty("");
+        });
+
+        colValorTotal.setCellValueFactory(param -> {
+            Object obj = param.getValue().getValue();
+            // O getSubtotal() do grupo agora já retorna o valor com a porcentagem inclusa
+            if (obj instanceof BudgetSubgroup) return new SimpleStringProperty(String.format("R$ %.2f", ((BudgetSubgroup) obj).getSubtotal()));
+            if (obj instanceof BudgetSubgetItem) return new SimpleStringProperty(String.format("R$ %.2f", ((BudgetSubgetItem) obj).getSubtotal()));
+            return null;
+        });
     }
 
     @FXML
     public void criarNovoGrupo() {
         String nome = txtNomeGrupo.getText();
+        String percStr = txtPorcentagemGrupo.getText().replace(",", ".");
+
         if (nome != null && !nome.trim().isEmpty()) {
-            BudgetSubgroup novoGrupo = new BudgetSubgroup(nome);
-            TreeItem<Object> grupoNode = new TreeItem<>(novoGrupo);
-            rootNode.getChildren().add(grupoNode);
-            treeOrcamento.getSelectionModel().select(grupoNode);
-            txtNomeGrupo.clear();
+            try {
+                BigDecimal porcentagem = percStr.isEmpty() ? BigDecimal.ZERO : new BigDecimal(percStr);
+                BudgetSubgroup novoGrupo = new BudgetSubgroup(nome);
+                novoGrupo.setPercentage(porcentagem);
+
+                TreeItem<Object> grupoNode = new TreeItem<>(novoGrupo);
+                rootNode.getChildren().add(grupoNode);
+
+                treeOrcamento.getSelectionModel().select(grupoNode);
+
+                txtNomeGrupo.clear();
+                txtPorcentagemGrupo.clear();
+            } catch (NumberFormatException e) {
+                mostrarAlerta("Porcentagem inválida!");
+            }
         }
     }
 
@@ -51,31 +133,58 @@ public class BudgetController {
     public void add() {
         TreeItem<Object> selecionado = treeOrcamento.getSelectionModel().getSelectedItem();
 
-        if (selecionado == null || !(selecionado.getValue() instanceof BudgetSubgroup)) {
+        if (selecionado == null) {
+            mostrarAlerta("Selecione um grupo ou um item na tabela!");
+            return;
+        }
+
+        TreeItem<Object> grupoDestino = null;
+
+        if (selecionado.getValue() instanceof BudgetSubgroup) {
+            grupoDestino = selecionado;
+        } else if (selecionado.getValue() instanceof BudgetSubgetItem) {
+            grupoDestino = selecionado.getParent();
+        }
+
+        if (grupoDestino == null || !(grupoDestino.getValue() instanceof BudgetSubgroup)) {
             mostrarAlerta("Selecione um GRUPO na lista para adicionar o produto!");
             return;
         }
 
-        Product p = cbProduto.getValue();
-        if (p == null || txtQtd.getText().isEmpty()) {
-            mostrarAlerta("Selecione um produto e informe a quantidade.");
+        Object itemCombo = cbProduto.getSelectionModel().getSelectedItem();
+
+        if (!(itemCombo instanceof Product)) {
+            mostrarAlerta("Selecione um produto válido da lista.");
+            return;
+        }
+
+        Product p = (Product) itemCombo;
+
+        if (txtQtd.getText().isEmpty()) {
+            mostrarAlerta("Informe a quantidade.");
             return;
         }
 
         try {
             BigDecimal qtd = new BigDecimal(txtQtd.getText().replace(",", "."));
-            BigDecimal subtotal = p.getPrice().multiply(qtd);
+            BigDecimal subtotalItem = p.getPrice().multiply(qtd);
 
-            BudgetSubgroup grupo = (BudgetSubgroup) selecionado.getValue();
-            BudgetSubgetItem novoItem = new BudgetSubgetItem(p, qtd, subtotal);
+            BudgetSubgroup grupo = (BudgetSubgroup) grupoDestino.getValue();
+            BudgetSubgetItem novoItem = new BudgetSubgetItem(p, qtd, subtotalItem);
+
             grupo.addItem(novoItem);
 
             TreeItem<Object> itemNode = new TreeItem<>(novoItem);
-            selecionado.getChildren().add(itemNode);
-            selecionado.setExpanded(true);
+            grupoDestino.getChildren().add(itemNode);
+            grupoDestino.setExpanded(true);
 
             recalcularTotalGeral();
+
+            treeOrcamento.getSelectionModel().select(grupoDestino);
+            cbProduto.getSelectionModel().clearSelection();
+            cbProduto.getEditor().clear();
             txtQtd.clear();
+            cbProduto.requestFocus();
 
         } catch (NumberFormatException e) {
             mostrarAlerta("Quantidade inválida!");
@@ -88,6 +197,7 @@ public class BudgetController {
         if (selecionado == null) return;
 
         TreeItem<Object> pai = selecionado.getParent();
+        if (pai == null) return;
 
         if (selecionado.getValue() instanceof BudgetSubgetItem) {
             BudgetSubgroup grupoPai = (BudgetSubgroup) pai.getValue();
@@ -104,12 +214,8 @@ public class BudgetController {
 
         if (selecionado != null && selecionado.getValue() instanceof BudgetSubgetItem) {
             BudgetSubgetItem item = (BudgetSubgetItem) selecionado.getValue();
-
-
             cbProduto.setValue(item.getProduct());
             txtQtd.setText(item.getQuantity().toString());
-
-
             removerSelecionado();
         } else {
             mostrarAlerta("Selecione um produto individual para editar.");
@@ -119,14 +225,13 @@ public class BudgetController {
     private void recalcularTotalGeral() {
         totalGeral = BigDecimal.ZERO;
         for (TreeItem<Object> grupoNode : rootNode.getChildren()) {
-            BudgetSubgroup g = (BudgetSubgroup) grupoNode.getValue();
-            totalGeral = totalGeral.add(g.getSubtotal());
-
-
-            grupoNode.setValue(null);
-            grupoNode.setValue(g);
+            if (grupoNode.getValue() instanceof BudgetSubgroup) {
+                BudgetSubgroup g = (BudgetSubgroup) grupoNode.getValue();
+                totalGeral = totalGeral.add(g.getSubtotal());
+            }
         }
-        lblTotal.setText("Total Geral: R$ " + totalGeral);
+        lblTotal.setText(String.format("Total Geral: R$ %.2f", totalGeral));
+        treeOrcamento.refresh();
     }
 
     @FXML
@@ -147,7 +252,6 @@ public class BudgetController {
         b.setSubgroups(listaFinal);
 
         budgetRepo.save(b);
-
         mostrarAlerta("Orçamento salvo com sucesso!");
         limparTela();
     }

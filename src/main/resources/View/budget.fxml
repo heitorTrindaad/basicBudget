@@ -17,6 +17,8 @@
     <Label text="Estrutura do Orçamento:" style="-fx-font-weight: bold;"/>
     <HBox spacing="10">
         <TextField fx:id="txtNomeGrupo" promptText="Nome do Subgrupo (ex: Quadro 01)" HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="txtPorcentagemGrupo" promptText="\% Margem" prefWidth="85" style="-fx-alignment: CENTER;"/>
+
         <Button text="Criar Novo Grupo" onAction="#criarNovoGrupo"
                 style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand;"/>
     </HBox>
@@ -24,13 +26,24 @@
     <Separator/>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
-        <ComboBox fx:id="cbProduto" promptText="Selecione o Produto" prefWidth="200"/>
+        <ComboBox fx:id="cbProduto" promptText="Selecione o Produto" prefWidth="250"/>
         <TextField fx:id="txtQtd" promptText="Qtd" prefWidth="80"/>
         <Button text="Adicionar ao Grupo Selecionado" onAction="#add"
                 style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-cursor: hand;"/>
     </HBox>
 
-    <TreeView fx:id="treeOrcamento" prefHeight="350" VBox.vgrow="ALWAYS"/>
+    <TreeTableView fx:id="treeOrcamento" prefHeight="350" VBox.vgrow="ALWAYS">
+        <columns>
+            <TreeTableColumn fx:id="colDescricao" text="Descrição / Produto" prefWidth="280" />
+            <TreeTableColumn fx:id="colMedida" text="Medida" prefWidth="80" style="-fx-alignment: CENTER;" />
+            <TreeTableColumn fx:id="colQtd" text="Qtd" prefWidth="80" style="-fx-alignment: CENTER;" />
+            <TreeTableColumn fx:id="colValorUnit" text="V. Unitário" prefWidth="120" style="-fx-alignment: CENTER-RIGHT;" />
+            <TreeTableColumn fx:id="colValorTotal" text="V. Total" prefWidth="120" style="-fx-alignment: CENTER-RIGHT; -fx-font-weight: bold;" />
+        </columns>
+        <columnResizePolicy>
+            <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+        </columnResizePolicy>
+    </TreeTableView>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Button text="Editar Item" onAction="#editarSelecionado"

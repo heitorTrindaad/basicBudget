@@ -12,7 +12,7 @@ public class productService {
         this.ProductRepositoryMemory = ProductRepositoryMemory;
     }
 
-    public Product createProduct(String name, BigDecimal price, int productCode, String measurement) {
+    public Product createProduct(String name, BigDecimal price, String productCode, String measurement) {
         if (name==null || name.isBlank()){
             throw new IllegalArgumentException("Product name wasnt filled.");
         } //hi

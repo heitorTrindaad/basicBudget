@@ -30,10 +30,9 @@
 
     <HBox spacing="10">
         <Button text="Salvar" onAction="#salvar"/>
-        <Button text="Limpar" onAction="#limpar"/>
     </HBox>
 
-    <TableView fx:id="tableClientes" prefHeight="250">
+    <TableView fx:id="tableClientes" prefHeight="250" onMouseClicked="#carregarCliente">
         <columns>
             <TableColumn text="ID" fx:id="colId" prefWidth="50" style="-fx-alignment: CENTER;"/>
             <TableColumn text="Nome" fx:id="colNome" prefWidth="150" style="-fx-alignment: CENTER;"/>

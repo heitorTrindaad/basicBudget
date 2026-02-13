@@ -55,22 +55,6 @@ public class HistoryController {
 
         // 3. Define a lista filtrada como a fonte da ListView
         listHistory.setItems(filteredData);
-
-        listHistory.setCellFactory(lv -> new ListCell<Budget>() {
-            @Override
-            protected void updateItem(Budget item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    // Formatação: #01 - João Silva (R$ 1500.00)
-                    setText(String.format("#%d - %s (R$ %s)",
-                            item.getId(),
-                            item.getClient().getName(),
-                            item.getTotal().toString()));
-                }
-            }
-        });
     }
 
     public void atualizarLista() {

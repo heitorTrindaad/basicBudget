@@ -6,13 +6,13 @@ public class Product {
     private int id;
     private String name;
     private BigDecimal price;
-    private int productCode;
+    private String productCode;
     private String measurement;
 
     public Product() {
     }
 
-    public Product(String name, BigDecimal price, int productCode, String measurement) {
+    public Product(String name, BigDecimal price, String productCode, String measurement) {
         this.name = name;
         this.price = price;
         this.productCode = productCode;
@@ -24,11 +24,11 @@ public class Product {
         return name;
     }
 
-    public int getProductCode() {
+    public String getProductCode() {
         return productCode;
     }
 
-    public void setProductCode(int productCode) {
+    public void setProductCode(String productCode) {
         this.productCode = productCode;
     }
 
