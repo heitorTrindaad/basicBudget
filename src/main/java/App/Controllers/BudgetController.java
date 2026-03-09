@@ -19,7 +19,6 @@ public class BudgetController {
     @FXML private TextField txtNomeGrupo;
     @FXML private TextField txtPorcentagemGrupo;
 
-    // CORREÇÃO: Alterado de TreeView para TreeTableView para suportar colunas
     @FXML private TreeTableView<Object> treeOrcamento;
 
     @FXML private Label lblTotal;
@@ -49,8 +48,11 @@ public class BudgetController {
         cbProduto.setEditable(true);
         cbProduto.setItems(filteredProducts);
         cbProduto.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
-            Product selected = cbProduto.getSelectionModel().getSelectedItem();
-            if (selected != null && selected.getName().equals(newValue)) return;
+            Object selectedObj = cbProduto.getSelectionModel().getSelectedItem();
+            if (selectedObj instanceof Product) {
+                Product selected = (Product) selectedObj;
+                if (selected.getName().equals(newValue)) return;
+            }
 
             filteredProducts.setPredicate(product -> {
                 if (newValue == null || newValue.isEmpty()) return true;
@@ -58,6 +60,7 @@ public class BudgetController {
                 return product.getName().toLowerCase().contains(filter) ||
                         (product.getProductCode() != null && product.getProductCode().toLowerCase().contains(filter));
             });
+
             if (!newValue.isEmpty()) cbProduto.show();
         });
 
@@ -139,7 +142,6 @@ public class BudgetController {
         }
 
         TreeItem<Object> grupoDestino = null;
-
         if (selecionado.getValue() instanceof BudgetSubgroup) {
             grupoDestino = selecionado;
         } else if (selecionado.getValue() instanceof BudgetSubgetItem) {
@@ -150,17 +152,27 @@ public class BudgetController {
             mostrarAlerta("Selecione um GRUPO na lista para adicionar o produto!");
             return;
         }
+        Object selection = cbProduto.getSelectionModel().getSelectedItem();
+        Product p = null;
 
-        Object itemCombo = cbProduto.getSelectionModel().getSelectedItem();
+        if (selection instanceof Product) {
+            p = (Product) selection;
+        } else {
+            String textoDigitado = cbProduto.getEditor().getText();
+            if (textoDigitado != null && !textoDigitado.isEmpty()) {
+                p = cbProduto.getItems().stream()
+                        .filter(prod -> prod.getName().equalsIgnoreCase(textoDigitado))
+                        .findFirst()
+                        .orElse(null);
+            }
+        }
 
-        if (!(itemCombo instanceof Product)) {
+        if (p == null) {
             mostrarAlerta("Selecione um produto válido da lista.");
             return;
         }
 
-        Product p = (Product) itemCombo;
-
-        if (txtQtd.getText().isEmpty()) {
+        if (txtQtd.getText().trim().isEmpty()) {
             mostrarAlerta("Informe a quantidade.");
             return;
         }
@@ -180,7 +192,6 @@ public class BudgetController {
 
             recalcularTotalGeral();
 
-            treeOrcamento.getSelectionModel().select(grupoDestino);
             cbProduto.getSelectionModel().clearSelection();
             cbProduto.getEditor().clear();
             txtQtd.clear();

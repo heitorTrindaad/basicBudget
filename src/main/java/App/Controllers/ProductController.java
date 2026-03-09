@@ -112,7 +112,7 @@ public class ProductController {
         txtNome.clear();
         txtPreco.clear();
         txtCodigo.clear();
-        medidaSelecionada = "Unidade";
+        medidaSelecionada = "Un";
         mbMeasurement.setText("Selecione a Medida");
         produtoSendoEditado = null;
     }
