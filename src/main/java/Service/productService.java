@@ -41,11 +41,11 @@ public class productService {
         if  (price == null || price.compareTo(BigDecimal.ZERO) <= 0){
             throw new IllegalArgumentException("Product price is invalid.");
         }
-
         product.setName(name.trim());
         product.setPrice(price);
 
-        return ProductRepositoryMemory.save(product);
+        ProductRepositoryMemory.update(product);
+        return product;
     }
 
     public void deleteProduct(int id){

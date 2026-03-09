@@ -10,11 +10,21 @@ public class ProductRepositoryMemory implements ProductRepository {
     private static final List<Product> products = new ArrayList<>();
     private static final AtomicInteger idCounter = new AtomicInteger(1);
 
+    public ProductRepositoryMemory() {
+        if (products.isEmpty()) {
+            List<Product> loaded = ProductJsonStorage.loadFromFile();
+            if (!loaded.isEmpty()) {
+                this.setAll(loaded);
+            }
+        }
+    }
+
     public Product save(Product product){
         if(product.getId() == 0){
             product.setId(idCounter.getAndIncrement());
         }
         products.add(product);
+        ProductJsonStorage.saveToFile(products);
         return product;
     }
 
@@ -26,7 +36,7 @@ public class ProductRepositoryMemory implements ProductRepository {
     }
 
     public List<Product> findAll(){
-        return new ArrayList<>(products); // evita acesso direto à lista
+        return new ArrayList<>(products);
     }
 
     public void setAll(List<Product> list){
@@ -43,12 +53,14 @@ public class ProductRepositoryMemory implements ProductRepository {
 
     public void delete(int id){
         products.removeIf(p -> p.getId() == id);
+        ProductJsonStorage.saveToFile(products);
     }
 
     public void update(Product product) {
         for (int i = 0; i < products.size(); i++) {
             if (products.get(i).getId() == product.getId()) {
                 products.set(i, product);
+                ProductJsonStorage.saveToFile(products);
                 break;
             }
         }
