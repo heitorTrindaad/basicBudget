@@ -1,9 +1,9 @@
 package App.Controllers;
 
 import Model.*;
-import Repository.BudgetRepositoryMemory;
-import Repository.ClientRepositoryMemory;
-import Repository.ProductRepositoryMemory;
+import Service.budgetService; // Novos imports mapeados
+import Service.clientService;
+import Service.productService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
@@ -14,35 +14,51 @@ import java.util.List;
 
 public class BudgetController {
 
-    @FXML private ComboBox<Product> cbProduto;
-    @FXML private TextField txtQtd;
-    @FXML private TextField txtNomeGrupo;
-    @FXML private TextField txtPorcentagemGrupo;
+    @FXML
+    private ComboBox<Product> cbProduto;
+    @FXML
+    private TextField txtQtd;
+    @FXML
+    private TextField txtNomeGrupo;
+    @FXML
+    private TextField txtPorcentagemGrupo;
 
-    @FXML private TreeTableView<Object> treeOrcamento;
+    @FXML
+    private TreeTableView<Object> treeOrcamento;
 
-    @FXML private Label lblTotal;
-    @FXML private ComboBox<Client> cbClientes;
+    @FXML
+    private Label lblTotal;
+    @FXML
+    private ComboBox<Client> cbClientes;
 
-    @FXML private TreeTableColumn<Object, String> colDescricao;
-    @FXML private TreeTableColumn<Object, String> colMedida;
-    @FXML private TreeTableColumn<Object, String> colQtd;
-    @FXML private TreeTableColumn<Object, String> colValorUnit;
-    @FXML private TreeTableColumn<Object, String> colValorTotal;
+    @FXML
+    private TreeTableColumn<Object, String> colDescricao;
+    @FXML
+    private TreeTableColumn<Object, String> colMedida;
+    @FXML
+    private TreeTableColumn<Object, String> colQtd;
+    @FXML
+    private TreeTableColumn<Object, String> colValorUnit;
+    @FXML
+    private TreeTableColumn<Object, String> colValorTotal;
 
-    private final ClientRepositoryMemory clientRepo = new ClientRepositoryMemory();
-    private final ProductRepositoryMemory repo = new ProductRepositoryMemory();
-    private final BudgetRepositoryMemory budgetRepo = BudgetRepositoryMemory.getInstance();
+    // ALTERADO: Removidas as criações diretas com 'new'. Agora consome os Services
+    // correspondentes.
+    private final clientService clService = clientService.getInstance();
+    private final productService prodService = productService.getInstance();
+    private final budgetService budService = budgetService.getInstance();
 
     private TreeItem<Object> rootNode = new TreeItem<>("Orçamento");
     private BigDecimal totalGeral = BigDecimal.ZERO;
 
     @FXML
     public void initialize() {
-        cbClientes.getItems().addAll(clientRepo.findAll());
+        // ALTERADO: Puxando da mesma instância usada no cadastro de clientes
+        cbClientes.getItems().addAll(clService.findAll());
 
-        javafx.collections.ObservableList<Product> allProducts =
-                javafx.collections.FXCollections.observableArrayList(repo.findAll());
+        // ALTERADO: Puxando da mesma instância usada no cadastro de produtos
+        javafx.collections.ObservableList<Product> allProducts = javafx.collections.FXCollections
+                .observableArrayList(prodService.findAll());
         FilteredList<Product> filteredProducts = new FilteredList<>(allProducts, p -> true);
 
         cbProduto.setEditable(true);
@@ -51,17 +67,20 @@ public class BudgetController {
             Object selectedObj = cbProduto.getSelectionModel().getSelectedItem();
             if (selectedObj instanceof Product) {
                 Product selected = (Product) selectedObj;
-                if (selected.getName().equals(newValue)) return;
+                if (selected.getName().equals(newValue))
+                    return;
             }
 
             filteredProducts.setPredicate(product -> {
-                if (newValue == null || newValue.isEmpty()) return true;
+                if (newValue == null || newValue.isEmpty())
+                    return true;
                 String filter = newValue.toLowerCase();
                 return product.getName().toLowerCase().contains(filter) ||
                         (product.getProductCode() != null && product.getProductCode().toLowerCase().contains(filter));
             });
 
-            if (!newValue.isEmpty()) cbProduto.show();
+            if (!newValue.isEmpty())
+                cbProduto.show();
         });
 
         treeOrcamento.setRoot(rootNode);
@@ -74,36 +93,41 @@ public class BudgetController {
             Object obj = param.getValue().getValue();
             if (obj instanceof BudgetSubgroup) {
                 BudgetSubgroup g = (BudgetSubgroup) obj;
-                // Exibe o nome do grupo e a porcentagem aplicada
                 return new SimpleStringProperty(g.getName() + " (+" + g.getPercentage() + "%)");
             }
-            if (obj instanceof BudgetSubgetItem) return new SimpleStringProperty(((BudgetSubgetItem) obj).getProduct().getName());
+            if (obj instanceof BudgetSubgetItem)
+                return new SimpleStringProperty(((BudgetSubgetItem) obj).getProduct().getName());
             return null;
         });
 
         colMedida.setCellValueFactory(param -> {
             Object obj = param.getValue().getValue();
-            if (obj instanceof BudgetSubgetItem) return new SimpleStringProperty(((BudgetSubgetItem) obj).getProduct().getMeasurement());
+            if (obj instanceof BudgetSubgetItem)
+                return new SimpleStringProperty(((BudgetSubgetItem) obj).getProduct().getMeasurement());
             return new SimpleStringProperty("");
         });
 
         colQtd.setCellValueFactory(param -> {
             Object obj = param.getValue().getValue();
-            if (obj instanceof BudgetSubgetItem) return new SimpleStringProperty(((BudgetSubgetItem) obj).getQuantity().toString());
+            if (obj instanceof BudgetSubgetItem)
+                return new SimpleStringProperty(((BudgetSubgetItem) obj).getQuantity().toString());
             return new SimpleStringProperty("");
         });
 
         colValorUnit.setCellValueFactory(param -> {
             Object obj = param.getValue().getValue();
-            if (obj instanceof BudgetSubgetItem) return new SimpleStringProperty(String.format("R$ %.2f", ((BudgetSubgetItem) obj).getProduct().getPrice()));
+            if (obj instanceof BudgetSubgetItem)
+                return new SimpleStringProperty(
+                        String.format("R$ %.2f", ((BudgetSubgetItem) obj).getProduct().getPrice()));
             return new SimpleStringProperty("");
         });
 
         colValorTotal.setCellValueFactory(param -> {
             Object obj = param.getValue().getValue();
-            // O getSubtotal() do grupo agora já retorna o valor com a porcentagem inclusa
-            if (obj instanceof BudgetSubgroup) return new SimpleStringProperty(String.format("R$ %.2f", ((BudgetSubgroup) obj).getSubtotal()));
-            if (obj instanceof BudgetSubgetItem) return new SimpleStringProperty(String.format("R$ %.2f", ((BudgetSubgetItem) obj).getSubtotal()));
+            if (obj instanceof BudgetSubgroup)
+                return new SimpleStringProperty(String.format("R$ %.2f", ((BudgetSubgroup) obj).getSubtotal()));
+            if (obj instanceof BudgetSubgetItem)
+                return new SimpleStringProperty(String.format("R$ %.2f", ((BudgetSubgetItem) obj).getSubtotal()));
             return null;
         });
     }
@@ -205,10 +229,12 @@ public class BudgetController {
     @FXML
     public void removerSelecionado() {
         TreeItem<Object> selecionado = treeOrcamento.getSelectionModel().getSelectedItem();
-        if (selecionado == null) return;
+        if (selecionado == null)
+            return;
 
         TreeItem<Object> pai = selecionado.getParent();
-        if (pai == null) return;
+        if (pai == null)
+            return;
 
         if (selecionado.getValue() instanceof BudgetSubgetItem) {
             BudgetSubgroup grupoPai = (BudgetSubgroup) pai.getValue();
@@ -262,7 +288,8 @@ public class BudgetController {
         }
         b.setSubgroups(listaFinal);
 
-        budgetRepo.save(b);
+        // ALTERADO: Persistência delegada ao budgetService unificado
+        budService.save(b);
         mostrarAlerta("Orçamento salvo com sucesso!");
         limparTela();
     }

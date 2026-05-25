@@ -1,11 +1,10 @@
 package App.Controllers;
 
 import Model.Product;
-import Repository.ProductRepositoryMemory;
+import Service.productService; // Importação da camada Service
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -16,23 +15,32 @@ import javafx.event.ActionEvent;
 
 public class ProductController {
 
-    @FXML private TextField txtNome;
-    @FXML private TextField txtPreco;
-    @FXML private TextField txtCodigo;
+    @FXML
+    private TextField txtNome;
+    @FXML
+    private TextField txtPreco;
+    @FXML
+    private TextField txtCodigo;
 
-    @FXML private TableView<Product> tblProduct;
-    @FXML private TableColumn<Product, String> colNome;
-    @FXML private TableColumn<Product, String> colPreco;
-    @FXML private TableColumn<Product, String> colCodigo;
-    @FXML private TableColumn<Product, String> colMedida;
+    @FXML
+    private TableView<Product> tblProduct;
+    @FXML
+    private TableColumn<Product, String> colNome;
+    @FXML
+    private TableColumn<Product, String> colPreco;
+    @FXML
+    private TableColumn<Product, String> colCodigo;
+    @FXML
+    private TableColumn<Product, String> colMedida;
 
-    @FXML private MenuButton mbMeasurement;
+    @FXML
+    private MenuButton mbMeasurement;
 
     private String medidaSelecionada = "Unidade";
     private Product produtoSendoEditado = null;
 
-    private final ProductRepositoryMemory repo =
-            new ProductRepositoryMemory();
+    // ALTERADO: Substituída a instanciação direta pelo Singleton do Service
+    private final productService service = productService.getInstance();
 
     @FXML
     public void initialize() {
@@ -48,7 +56,6 @@ public class ProductController {
     public void selecionarMedida(ActionEvent event) {
         MenuItem item = (MenuItem) event.getSource();
         this.medidaSelecionada = item.getText();
-
         mbMeasurement.setText(medidaSelecionada);
     }
 
@@ -100,7 +107,8 @@ public class ProductController {
             p.setPrice(BigDecimal.ZERO);
         }
         if (Novo) {
-            repo.save(p);
+            // ALTERADO: Chamando o service centralizado
+            service.save(p);
         }
 
         limpar();
@@ -118,6 +126,7 @@ public class ProductController {
     }
 
     private void atualizarLista() {
-        tblProduct.getItems().setAll(repo.findAll());
+        // ALTERADO: Sincronizando com a lista unificada do Service
+        tblProduct.getItems().setAll(service.findAll());
     }
 }

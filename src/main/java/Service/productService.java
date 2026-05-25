@@ -2,54 +2,35 @@ package Service;
 
 import Model.Product;
 import Repository.ProductRepositoryMemory;
-
-import java.math.BigDecimal;
+import java.util.List;
 
 public class productService {
-    private final ProductRepositoryMemory ProductRepositoryMemory;
 
-    public productService(ProductRepositoryMemory ProductRepositoryMemory) {
-        this.ProductRepositoryMemory = ProductRepositoryMemory;
+    // 1. Instância única global
+    private static productService instance;
+
+    // 2. Repositório de produtos centralizado
+    private final ProductRepositoryMemory repository;
+
+    // 3. Construtor privado
+    private productService() {
+        this.repository = new ProductRepositoryMemory();
     }
 
-    public Product createProduct(String name, BigDecimal price, String productCode, String measurement) {
-        if (name==null || name.isBlank()){
-            throw new IllegalArgumentException("Product name wasnt filled.");
-        } //hi
-        if (price == null || price.compareTo(BigDecimal.ZERO)<=0){
-            throw new IllegalArgumentException("Product price is invalid.");
+    // 4. Ponto de acesso do Controller
+    public static synchronized productService getInstance() {
+        if (instance == null) {
+            instance = new productService();
         }
-
-        Product product = new Product(name, price, productCode, measurement);
-        product.setName(name.trim());
-        product.setPrice(price);
-
-        return ProductRepositoryMemory.save(product);
+        return instance;
     }
 
-    public Product updateProduct(int id, String name, BigDecimal price){
-        Product product = ProductRepositoryMemory.findById(id);
-
-        if (product == null) {
-            throw new IllegalArgumentException("Product not found.");
-        }
-
-        if (name ==null || name.isBlank()){
-            throw new IllegalArgumentException("Product name wasnt filled.");
-        }
-
-        if  (price == null || price.compareTo(BigDecimal.ZERO) <= 0){
-            throw new IllegalArgumentException("Product price is invalid.");
-        }
-        product.setName(name.trim());
-        product.setPrice(price);
-
-        ProductRepositoryMemory.update(product);
-        return product;
+    // Repasse de operações para o repositório
+    public void save(Product product) {
+        repository.save(product);
     }
 
-    public void deleteProduct(int id){
-        ProductRepositoryMemory.delete(id);
+    public List<Product> findAll() {
+        return repository.findAll();
     }
-
 }

@@ -9,7 +9,6 @@
     <artifactId>basicBudget</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <!-- ================= PROPERTIES ================= -->
     <properties>
         <java.version>23</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -18,47 +17,46 @@
         <javafx.version>21</javafx.version>
     </properties>
 
-    <!-- ================= DEPENDENCIES ================= -->
     <dependencies>
 
-        <!-- JavaFX Controls -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
         </dependency>
 
-        <!-- JavaFX FXML -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
 
-        <!-- Gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.github.mkpaz</groupId>
+            <artifactId>atlantafx-base</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+
     </dependencies>
 
-    <!-- ================= BUILD ================= -->
-    <build>
+<build>
         <plugins>
 
-            <!-- COMPILER -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.13.0</version>
                 <configuration>
                     <release>${java.version}</release>
                 </configuration>
             </plugin>
 
-            <!-- JAR NORMAL -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -72,7 +70,6 @@
                 </configuration>
             </plugin>
 
-            <!-- JAR COM DEPENDÊNCIAS -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -98,7 +95,6 @@
                 </executions>
             </plugin>
 
-            <!-- JAVAFX RUN -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -106,56 +102,6 @@
                 <configuration>
                     <mainClass>App.Launcher</mainClass>
                 </configuration>
-            </plugin>
-
-            <!-- JPACKAGE (GERA EXE) -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-
-                                <delete dir="dist"/>
-
-                                <exec executable="jpackage">
-
-                                    <arg value="--type"/>
-                                    <arg value="exe"/>
-
-                                    <arg value="--dest"/>
-                                    <arg value="dist"/>
-
-                                    <arg value="--name"/>
-                                    <arg value="BasicBudget"/>
-
-                                    <arg value="--input"/>
-                                    <arg value="target"/>
-
-                                    <arg value="--main-jar"/>
-                                    <arg value="basicBudget-1.0-SNAPSHOT-jar-with-dependencies.jar"/>
-
-                                    <arg value="--main-class"/>
-                                    <arg value="App.Launcher"/>
-
-                                    <arg value="--win-shortcut"/>
-                                    <arg value="--win-menu"/>
-
-                                    <arg value="--java-options"/>
-                                    <arg value="--add-modules=javafx.controls,javafx.fxml"/>
-
-                                </exec>
-
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
 
         </plugins>

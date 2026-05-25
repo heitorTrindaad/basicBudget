@@ -2,52 +2,39 @@ package Service;
 
 import Model.Budget;
 import Repository.BudgetRepositoryMemory;
-
-import java.math.BigDecimal;
+import java.util.List;
 
 public class budgetService {
-    private final BudgetRepositoryMemory budgetRepository;
 
-    public budgetService(BudgetRepositoryMemory budgetRepository) {
-        this.budgetRepository = budgetRepository;
+    private static budgetService instance;
+    private final BudgetRepositoryMemory repository;
+
+    private budgetService() {
+        this.repository = new BudgetRepositoryMemory();
     }
 
-    public Budget createBudget(BigDecimal quantity, String measurement){
-        if (measurement==null || measurement.isBlank()){
-            throw new IllegalArgumentException("Measurement wasnt filled.");
-        } //hi
-        if (quantity == null || quantity.compareTo(BigDecimal.ZERO)<=0){
-            throw new IllegalArgumentException("Product quantity is invalid.");
+    public static synchronized budgetService getInstance() {
+        if (instance == null) {
+            instance = new budgetService();
         }
-        Budget budget = new Budget();
-        budget.setMeasurement(measurement.trim());
-        budget.setQuantity(quantity);
-
-        return budgetRepository.save(budget);
+        return instance;
     }
 
-    public Budget updateBudget(int id, BigDecimal quantity, String measurement){
-        Budget budget = budgetRepository.findById(id);
-
-        if (budget == null) {
-            throw new IllegalArgumentException("Budget not found.");
-        }
-
-        if (measurement == null || measurement.isBlank()){
-            throw new IllegalArgumentException("Measurement wasnt filled.");
-        }
-
-        if (quantity == null || quantity.compareTo(BigDecimal.ZERO)<=0){
-            throw new IllegalArgumentException("Product quantity is invalid.");
-        }
-
-        budget.setMeasurement(measurement.trim());
-        budget.setQuantity(quantity);
-
-        return budgetRepository.save(budget);
+    public void save(Budget budget) {
+        repository.save(budget);
     }
 
-    public void deleteClient(int id){
-        budgetRepository.delete(id);
+    public List<Budget> findAll() {
+        return repository.findAll();
+    }
+
+    public void delete(int id) {
+        repository.delete(id);
+    }
+
+    // CORRIGIDO: Agora condiz exatamente com o repositório que criamos juntos
+    public void update(int id, Budget budget) {
+        budget.setId(id); // Garante que o ID da tela está setado no objeto
+        repository.update(budget); // <-- Removido o 'id' extra para casar com a assinatura do Repo
     }
 }

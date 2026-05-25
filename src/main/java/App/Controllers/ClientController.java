@@ -1,30 +1,39 @@
 package App.Controllers;
 
 import Model.Client;
-import Repository.ClientRepositoryMemory;
+import Service.clientService; // Importação da camada Service
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class ClientController {
 
-    @FXML private TextField txtNome;
-    @FXML private TextField txtEmail;
-    @FXML private TextField txtCnpj;
-    @FXML private TextField txtTelefone;
+    @FXML
+    private TextField txtNome;
+    @FXML
+    private TextField txtEmail;
+    @FXML
+    private TextField txtCnpj;
+    @FXML
+    private TextField txtTelefone;
 
-    @FXML private TableView<Client> tableClientes;
-    @FXML private TableColumn<Client, Integer> colId;
-    @FXML private TableColumn<Client, String> colNome;
-    @FXML private TableColumn<Client, String> colEmail;
-    @FXML private TableColumn<Client, String> colCnpj;
-    @FXML private TableColumn<Client, String> colTelefone;
+    @FXML
+    private TableView<Client> tableClientes;
+    @FXML
+    private TableColumn<Client, Integer> colId;
+    @FXML
+    private TableColumn<Client, String> colNome;
+    @FXML
+    private TableColumn<Client, String> colEmail;
+    @FXML
+    private TableColumn<Client, String> colCnpj;
+    @FXML
+    private TableColumn<Client, String> colTelefone;
 
     private Client clienteSelecionado;
 
-
-    private final ClientRepositoryMemory repository =
-            new ClientRepositoryMemory();
+    // ALTERADO: Substituída a instanciação direta pelo Singleton do Service
+    private final clientService service = clientService.getInstance();
 
     @FXML
     public void initialize() {
@@ -51,18 +60,17 @@ public class ClientController {
 
     @FXML
     public void salvar() {
-
-        if(clienteSelecionado == null) {
+        if (clienteSelecionado == null) {
             clienteSelecionado = new Client();
         }
-
 
         clienteSelecionado.setName(txtNome.getText());
         clienteSelecionado.setEmail(txtEmail.getText());
         clienteSelecionado.setCnpj(txtCnpj.getText());
         clienteSelecionado.setTelefone(txtTelefone.getText());
 
-        repository.save(clienteSelecionado);
+        // ALTERADO: Redirecionado para o Service correspondente
+        service.save(clienteSelecionado);
         atualizarLista();
         limpar();
     }
@@ -77,8 +85,7 @@ public class ClientController {
     }
 
     private void atualizarLista() {
-        tableClientes.getItems().setAll(repository.findAll());
-
-
+        // ALTERADO: Procura a lista centralizada a partir do Service
+        tableClientes.getItems().setAll(service.findAll());
     }
 }

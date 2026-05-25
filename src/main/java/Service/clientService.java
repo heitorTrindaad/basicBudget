@@ -1,53 +1,36 @@
 package Service;
 
 import Model.Client;
-import Repository.ClientRepositoryMemory;
+import Repository.ClientRepositoryMemory; // Garanta que o pacote do seu repositório está correto
+import java.util.List;
 
 public class clientService {
-    private final ClientRepositoryMemory clientRepository;
 
-    public clientService(ClientRepositoryMemory clientRepository) {
-        this.clientRepository = clientRepository;
+    // 1. Atributo estático que guardará a ÚNICA instância desta classe na aplicação
+    private static clientService instance;
+
+    // 2. O repositório agora é instanciado APENAS UMA VEZ aqui dentro
+    private final ClientRepositoryMemory repository;
+
+    // 3. Construtor PRIVADO: impede que outras classes usem "new clientService()"
+    private clientService() {
+        this.repository = new ClientRepositoryMemory();
     }
 
-
-    public Client createClient(String name, String email, String cnpj, String telefone) {
-        if (name==null || name.isBlank()){
-            throw new IllegalArgumentException("Client name wasnt filled.");
-        } //hi
-        if (email==null || email.isBlank()) {
-            throw new IllegalArgumentException("Invalid Email.");
+    // 4. Método global para obter a instância única
+    public static synchronized clientService getInstance() {
+        if (instance == null) {
+            instance = new clientService();
         }
-        Client client = new Client(name, email, cnpj, telefone);
-        client.setName(name.trim());
-        client.setEmail(email.trim());
-
-        return clientRepository.save(client);
+        return instance;
     }
 
-    public Client updateClient(int id, String name, String email){
-        Client client = clientRepository.findById(id);
-
-        if (client == null) {
-            throw new IllegalArgumentException("Client not found.");
-        }
-
-        if (name ==null || name.isBlank()){
-            throw new IllegalArgumentException("Client name wasnt filled.");
-        }
-
-        if (email == null || email.isBlank()){
-            throw new IllegalArgumentException("Email is invalid.");
-        }
-
-        client.setName(name.trim());
-        client.setEmail(email.trim());
-
-        return clientRepository.save(client);
+    // Métodos de negócio que apenas repassam a ordem para o repositório único
+    public void save(Client client) {
+        repository.save(client);
     }
 
-    public void deleteClient(int id){
-        clientRepository.delete(id);
+    public List<Client> findAll() {
+        return repository.findAll();
     }
-
 }

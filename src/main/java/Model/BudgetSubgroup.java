@@ -41,6 +41,10 @@ public class BudgetSubgroup {
         return items;
     }
 
+    public void setItems(List<BudgetSubgetItem> items) {
+        this.items = items;
+    }
+
     public BigDecimal getPercentage() {
         return percentage;
     }

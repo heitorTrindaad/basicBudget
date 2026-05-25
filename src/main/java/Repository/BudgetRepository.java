@@ -1,13 +1,16 @@
 package Repository;
 
 import Model.Budget;
-
 import java.util.List;
 
 public interface BudgetRepository {
-    Budget save(Budget budget);
-    Budget findById(int id);
-    List<Budget> findAll();
-    void setAll(List<Budget> list);
+    void save(Budget budget);
+
+    void update(Budget budget);
+
     void delete(int id);
+
+    List<Budget> findAll();
+
+    Budget findById(int id);
 }

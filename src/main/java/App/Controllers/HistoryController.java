@@ -3,7 +3,7 @@ package App.Controllers;
 import Model.Budget;
 import Model.BudgetSubgroup;
 import Model.BudgetSubgetItem;
-import Repository.BudgetRepositoryMemory;
+import Service.budgetService; // Importação do Service correspondente
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -18,51 +18,43 @@ public class HistoryController {
 
     @FXML
     private ListView<Budget> listHistory;
-
     @FXML
     private TextField txtPesquisa;
 
-    private BudgetRepositoryMemory repo = BudgetRepositoryMemory.getInstance();
+    // ALTERADO: Mudança para consumir o Singleton do budgetService centralizado
+    private budgetService service = budgetService.getInstance();
     private ObservableList<Budget> masterData = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
         atualizarLista();
 
-        // 1. Criamos a FilteredList envolvendo os dados originais
         FilteredList<Budget> filteredData = new FilteredList<>(masterData, p -> true);
 
-        // 2. Ouvinte de texto (dispara sempre que o usuário digita algo)
         txtPesquisa.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(budget -> {
-                // Se o campo estiver vazio, mostra tudo
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
 
                 String lowerCaseFilter = newValue.toLowerCase();
 
-                // Regras de busca: Nome do cliente ou ID do orçamento
                 if (budget.getClient().getName().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
                 } else if (String.valueOf(budget.getId()).contains(lowerCaseFilter)) {
                     return true;
                 }
 
-                return false; // Não encontrou nada
+                return false;
             });
         });
 
-        // 3. Define a lista filtrada como a fonte da ListView
         listHistory.setItems(filteredData);
     }
 
     public void atualizarLista() {
-        // 1. Buscamos os dados atualizados do repositório
-        var dadosDoRepo = repo.findAll();
-
-        // 2. Atualizamos apenas a masterData.
-        // A FilteredList e a ListView perceberão a mudança sozinhas.
+        // ALTERADO: Puxando do budgetService unificado
+        var dadosDoRepo = service.findAll();
         masterData.setAll(dadosDoRepo);
     }
 
@@ -81,7 +73,8 @@ public class HistoryController {
 
         Optional<ButtonType> result = confirmacao.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            repo.delete(selecionado.getId());
+            // ALTERADO: Delegado para o service
+            service.delete(selecionado.getId());
             atualizarLista();
         }
     }
@@ -89,7 +82,8 @@ public class HistoryController {
     @FXML
     public void verDetalhes() {
         Budget selecionado = listHistory.getSelectionModel().getSelectedItem();
-        if (selecionado == null) return;
+        if (selecionado == null)
+            return;
 
         StringBuilder sb = new StringBuilder();
         sb.append("Cliente: ").append(selecionado.getClient().getName()).append("\n");
@@ -121,14 +115,15 @@ public class HistoryController {
     @FXML
     public void editarOrcamento() {
         Budget selecionado = listHistory.getSelectionModel().getSelectedItem();
-        if (selecionado == null) return;
+        if (selecionado == null)
+            return;
 
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Editar Orçamento #" + selecionado.getId());
 
         StringBuilder itensTexto = new StringBuilder();
-        for(BudgetSubgroup g : selecionado.getSubgroups()) {
-            for(BudgetSubgetItem item : g.getItems()) {
+        for (BudgetSubgroup g : selecionado.getSubgroups()) {
+            for (BudgetSubgetItem item : g.getItems()) {
                 itensTexto.append(item.toString()).append("\n");
             }
         }
@@ -137,7 +132,8 @@ public class HistoryController {
         txtItens.setPromptText("Nota: Itens editados aqui serão convertidos em descrições simples.");
         TextField txtTotal = new TextField(selecionado.getTotal().toString());
 
-        VBox content = new VBox(10, new Label("Visualização dos Itens:"), txtItens, new Label("Valor Total:"), txtTotal);
+        VBox content = new VBox(10, new Label("Visualização dos Itens:"), txtItens, new Label("Valor Total:"),
+                txtTotal);
         dialog.getDialogPane().setContent(content);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
@@ -151,14 +147,17 @@ public class HistoryController {
                     if (!linha.trim().isEmpty()) {
                         BudgetSubgetItem novo = new BudgetSubgetItem(null, BigDecimal.ONE, BigDecimal.ZERO) {
                             @Override
-                            public String toString() { return linha; }
+                            public String toString() {
+                                return linha;
+                            }
                         };
                         grupoEditado.addItem(novo);
                     }
                 }
 
                 selecionado.setTotal(new BigDecimal(txtTotal.getText().replace(",", ".")));
-                repo.update(selecionado.getId(), selecionado);
+                // ALTERADO: Editando através do service correspondente
+                service.update(selecionado.getId(), selecionado);
                 atualizarLista();
             } catch (Exception e) {
                 mostrarAviso("Erro na conversão dos valores.");

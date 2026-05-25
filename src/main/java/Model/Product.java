@@ -12,31 +12,11 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, BigDecimal price, String productCode, String measurement) {
+    public Product(int id, String name, BigDecimal price, String productCode, String measurement) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.productCode = productCode;
-        this.measurement = measurement;
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
-
-    public String getProductCode() {
-        return productCode;
-    }
-
-    public void setProductCode(String productCode) {
-        this.productCode = productCode;
-    }
-
-    public String getMeasurement() {
-        return measurement;
-    }
-
-    public void setMeasurement(String measurement) {
         this.measurement = measurement;
     }
 
@@ -62,5 +42,26 @@ public class Product {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
+    }
+
+    public String getMeasurement() {
+        return measurement;
+    }
+
+    public void setMeasurement(String measurement) {
+        this.measurement = measurement;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

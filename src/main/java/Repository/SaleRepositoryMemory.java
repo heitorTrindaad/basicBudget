@@ -1,49 +1,54 @@
 package Repository;
 
 import Model.Sale;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SaleRepositoryMemory implements SaleRepository {
+    private final List<Sale> sales;
+    private final AtomicInteger idCounter;
 
-    private final List<Sale> sales = new ArrayList<>();
-    private final AtomicInteger idCounter = new AtomicInteger(1);
-
-    public Sale save(Sale sale){
-        if(sale.getId() == 0){
-            sale.setId(idCounter.getAndIncrement());
-        }
-        sales.add(sale);
-        return sale;
+    public SaleRepositoryMemory() {
+        this.sales = new ArrayList<>(SaleJsonStorage.loadFromFile());
+        int maxId = sales.stream().mapToInt(Sale::getId).max().orElse(0);
+        this.idCounter = new AtomicInteger(maxId + 1);
     }
 
-    public Sale findById(int id){
+    @Override
+    public void save(Sale Sale) {
+        Sale.setId(idCounter.getAndIncrement());
+        sales.add(Sale);
+        SaleJsonStorage.saveToFile(sales);
+    }
+
+    @Override
+    public void update(Sale Sale) {
+        for (int i = 0; i < sales.size(); i++) {
+            if (sales.get(i).getId() == Sale.getId()) {
+                sales.set(i, Sale);
+                SaleJsonStorage.saveToFile(sales);
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void delete(int id) {
+        sales.removeIf(b -> b.getId() == id);
+        SaleJsonStorage.saveToFile(sales);
+    }
+
+    @Override
+    public List<Sale> findAll() {
+        return new ArrayList<>(sales);
+    }
+
+    @Override
+    public Sale findById(int id) {
         return sales.stream()
-                .filter(s -> s.getId() == id)
+                .filter(b -> b.getId() == id)
                 .findFirst()
                 .orElse(null);
-    }
-
-    public List<Sale> findAll(){
-        return sales;
-    }
-
-    public void setAll(List<Sale> list){
-        sales.clear();
-        sales.addAll(list);
-
-        int maiorId = list.stream()
-                .mapToInt(Sale::getId)
-                .max()
-                .orElse(0);
-
-        idCounter.set(maiorId + 1);
-    }
-
-
-    public void delete(int id){
-        sales.removeIf(s -> s.getId() == id);
     }
 }
