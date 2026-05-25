@@ -27,7 +27,7 @@
                         <Image url="@../images/logo_empresa.png" />
                     </image>
                 </ImageView>
-                <Label fx:id="lblNomeEmpresa" text="Minha Empresa" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+                <Label fx:id="lblNomeEmpresa" text="Faturamento" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"/>
             </VBox>
 
             <HBox alignment="CENTER_RIGHT">
