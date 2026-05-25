@@ -32,9 +32,8 @@ public class budgetService {
         repository.delete(id);
     }
 
-    // CORRIGIDO: Agora condiz exatamente com o repositório que criamos juntos
     public void update(int id, Budget budget) {
-        budget.setId(id); // Garante que o ID da tela está setado no objeto
-        repository.update(budget); // <-- Removido o 'id' extra para casar com a assinatura do Repo
+        budget.setId(id);
+        repository.update(budget);
     }
 }

@@ -13,7 +13,6 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        // Ativa o tema visual moderno globalmente para todo o ciclo de vida do App
         Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
 
         root = FXMLLoader.load(getClass().getResource("/View/menu.fxml"));

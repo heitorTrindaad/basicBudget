@@ -10,7 +10,7 @@ public class LocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserial
 
     @Override
     public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
-        return new JsonPrimitive(date.format(formatter)); // Outputs "2023-10-27"
+        return new JsonPrimitive(date.format(formatter));
     }
 
     @Override

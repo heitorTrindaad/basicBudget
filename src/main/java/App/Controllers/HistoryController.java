@@ -21,7 +21,6 @@ public class HistoryController {
     @FXML
     private TextField txtPesquisa;
 
-    // ALTERADO: Mudança para consumir o Singleton do budgetService centralizado
     private budgetService service = budgetService.getInstance();
     private ObservableList<Budget> masterData = FXCollections.observableArrayList();
 
@@ -53,7 +52,6 @@ public class HistoryController {
     }
 
     public void atualizarLista() {
-        // ALTERADO: Puxando do budgetService unificado
         var dadosDoRepo = service.findAll();
         masterData.setAll(dadosDoRepo);
     }
@@ -73,7 +71,6 @@ public class HistoryController {
 
         Optional<ButtonType> result = confirmacao.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            // ALTERADO: Delegado para o service
             service.delete(selecionado.getId());
             atualizarLista();
         }
@@ -156,7 +153,6 @@ public class HistoryController {
                 }
 
                 selecionado.setTotal(new BigDecimal(txtTotal.getText().replace(",", ".")));
-                // ALTERADO: Editando através do service correspondente
                 service.update(selecionado.getId(), selecionado);
                 atualizarLista();
             } catch (Exception e) {

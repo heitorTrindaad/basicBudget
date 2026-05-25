@@ -1,7 +1,7 @@
 package App.Controllers;
 
 import Model.Client;
-import Service.clientService; // Importação da camada Service
+import Service.clientService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -32,7 +32,6 @@ public class ClientController {
 
     private Client clienteSelecionado;
 
-    // ALTERADO: Substituída a instanciação direta pelo Singleton do Service
     private final clientService service = clientService.getInstance();
 
     @FXML
@@ -69,7 +68,6 @@ public class ClientController {
         clienteSelecionado.setCnpj(txtCnpj.getText());
         clienteSelecionado.setTelefone(txtTelefone.getText());
 
-        // ALTERADO: Redirecionado para o Service correspondente
         service.save(clienteSelecionado);
         atualizarLista();
         limpar();
@@ -85,7 +83,6 @@ public class ClientController {
     }
 
     private void atualizarLista() {
-        // ALTERADO: Procura a lista centralizada a partir do Service
         tableClientes.getItems().setAll(service.findAll());
     }
 }

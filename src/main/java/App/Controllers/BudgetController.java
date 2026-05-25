@@ -1,7 +1,7 @@
 package App.Controllers;
 
 import Model.*;
-import Service.budgetService; // Novos imports mapeados
+import Service.budgetService;
 import Service.clientService;
 import Service.productService;
 import javafx.beans.property.SimpleStringProperty;
@@ -42,8 +42,6 @@ public class BudgetController {
     @FXML
     private TreeTableColumn<Object, String> colValorTotal;
 
-    // ALTERADO: Removidas as criações diretas com 'new'. Agora consome os Services
-    // correspondentes.
     private final clientService clService = clientService.getInstance();
     private final productService prodService = productService.getInstance();
     private final budgetService budService = budgetService.getInstance();
@@ -53,10 +51,8 @@ public class BudgetController {
 
     @FXML
     public void initialize() {
-        // ALTERADO: Puxando da mesma instância usada no cadastro de clientes
         cbClientes.getItems().addAll(clService.findAll());
 
-        // ALTERADO: Puxando da mesma instância usada no cadastro de produtos
         javafx.collections.ObservableList<Product> allProducts = javafx.collections.FXCollections
                 .observableArrayList(prodService.findAll());
         FilteredList<Product> filteredProducts = new FilteredList<>(allProducts, p -> true);
@@ -288,7 +284,6 @@ public class BudgetController {
         }
         b.setSubgroups(listaFinal);
 
-        // ALTERADO: Persistência delegada ao budgetService unificado
         budService.save(b);
         mostrarAlerta("Orçamento salvo com sucesso!");
         limparTela();

@@ -1,7 +1,7 @@
 package App.Controllers;
 
 import Model.Product;
-import Service.productService; // Importação da camada Service
+import Service.productService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -39,7 +39,6 @@ public class ProductController {
     private String medidaSelecionada = "Unidade";
     private Product produtoSendoEditado = null;
 
-    // ALTERADO: Substituída a instanciação direta pelo Singleton do Service
     private final productService service = productService.getInstance();
 
     @FXML
@@ -107,7 +106,6 @@ public class ProductController {
             p.setPrice(BigDecimal.ZERO);
         }
         if (Novo) {
-            // ALTERADO: Chamando o service centralizado
             service.save(p);
         }
 
@@ -126,7 +124,6 @@ public class ProductController {
     }
 
     private void atualizarLista() {
-        // ALTERADO: Sincronizando com a lista unificada do Service
         tblProduct.getItems().setAll(service.findAll());
     }
 }

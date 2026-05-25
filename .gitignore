@@ -39,3 +39,4 @@ build/
 
 ### Persistencia ###
 *.json
+dependency-reduced-pom.xml
