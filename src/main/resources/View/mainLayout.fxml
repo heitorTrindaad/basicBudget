@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.BarChart?>
+
+<BorderPane xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="App.Controllers.MainLayoutController" prefHeight="800.0" prefWidth="1280.0">
+    
+    <left>
+        <VBox fx:id="sidebar" spacing="15" style="-fx-background-color: #1e1e2e; -fx-padding: 15;" prefWidth="220.0" alignment="TOP_CENTER">
+            
+            <VBox alignment="CENTER" spacing="10" prefHeight="100.0">
+                <ImageView fx:id="imgLogo" fitWidth="80.0" fitHeight="80.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/logo_empresa.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="lblNomeEmpresa" text="Minha Empresa" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+            </VBox>
+
+            <HBox alignment="CENTER_RIGHT">
+                <Button fx:id="btnToggleSidebar" text="◀" onAction="#handleToggleSidebar" 
+                        style="-fx-background-color: transparent; -fx-text-fill: #a5a5b5; -fx-cursor: hand;"/>
+            </HBox>
+
+            <VBox spacing="10" alignment="TOP_LEFT" VBox.vgrow="ALWAYS">
+                <Button fx:id="btnDashboard" text="📊 Dashboard" maxWidth="Infinity" alignment="BASELINE_LEFT" onAction="#showDashboard" styleClass="flat"/>
+                <Button fx:id="btnClientes" text="👥 Clientes" maxWidth="Infinity" alignment="BASELINE_LEFT" onAction="#showClientes" styleClass="flat"/>
+                <Button fx:id="btnProdutos" text="📦 Produtos" maxWidth="Infinity" alignment="BASELINE_LEFT" onAction="#showProdutos" styleClass="flat"/>
+                <Button fx:id="btnOrcamentos" text="💼 Orçamentos" maxWidth="Infinity" alignment="BASELINE_LEFT" onAction="#showOrcamentos" styleClass="flat"/>
+                <Button fx:id="btnHistorico" text="📜 Histórico" maxWidth="Infinity" alignment="BASELINE_LEFT" onAction="#showHistorico" styleClass="flat"/>
+            </VBox>
+            
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentArea" style="-fx-padding: 20; -fx-background-color: #161622;">
+            
+            <VBox fx:id="dashboardView" spacing="20">
+                
+                <HBox alignment="CENTER_LEFT" spacing="20">
+                    <VBox>
+                        <Label text="Visão Geral de Orçamentos" style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                        <Label text="Acompanhe o desempenho do seu negócio" style="-fx-text-fill: #7e7e8c; -fx-font-size: 12px;"/>
+                    </VBox>
+                    
+                    <HBox HBox.hgrow="ALWAYS"/>
+                    
+                    <HBox styleClass="segmented-button">
+                        <ToggleButton fx:id="btnFiltroMes" text="Mês" selected="true" onAction="#handleFiltroMudou">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="filtroPeriodo"/>
+                            </toggleGroup>
+                        </ToggleButton>
+                        <ToggleButton fx:id="btnFiltroAno" text="Ano" toggleGroup="$filtroPeriodo" onAction="#handleFiltroMudou"/>
+                    </HBox>
+                </HBox>
+
+                <BarChart fx:id="chartOrcamentos" legendVisible="false" VBox.vgrow="ALWAYS" style="-fx-bar-fill: #27ae60; .default-color0.chart-bar { -fx-bar-fill: #27ae60; }">
+                    <xAxis>
+                        <CategoryAxis fx:id="xAxis" side="BOTTOM" tickLabelFill="WHITE" />
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis fx:id="yAxis" side="LEFT" tickLabelFill="WHITE" />
+                    </yAxis>
+                </BarChart>
+                
+            </VBox>
+        </StackPane>
+    </center>
+</BorderPane>

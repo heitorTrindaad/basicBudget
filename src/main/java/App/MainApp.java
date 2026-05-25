@@ -15,9 +15,9 @@ public class MainApp extends Application {
     public void start(Stage stage) throws Exception {
         Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
 
-        root = FXMLLoader.load(getClass().getResource("/View/menu.fxml"));
+        root = FXMLLoader.load(getClass().getResource("/View/mainLayout.fxml"));
         stage.setTitle("BasicBudget");
-        stage.setScene(new Scene(root, 1000, 600));
+        stage.setScene(new Scene(root, 1280, 800));
         stage.show();
     }
 

@@ -1,6 +1,7 @@
 package Model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,9 +9,11 @@ public class Budget {
     private int id;
     private Client client;
     private BigDecimal total = BigDecimal.ZERO;
+    private LocalDate date;
     private List<BudgetSubgroup> subgroups = new ArrayList<>();
 
     public Budget() {
+        this.date = LocalDate.now();
     }
 
     public int getId() {
@@ -43,6 +46,14 @@ public class Budget {
 
     public void setSubgroups(List<BudgetSubgroup> subgroups) {
         this.subgroups = subgroups;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     @Override
