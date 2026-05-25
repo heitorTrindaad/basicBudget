@@ -16,7 +16,7 @@
 <?import javafx.scene.chart.BarChart?>
 
 <BorderPane xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="App.Controllers.MainLayoutController" prefHeight="800.0" prefWidth="1280.0">
+            fx:controller="Controllers.MainLayoutController" prefHeight="800.0" prefWidth="1280.0">
     
     <left>
         <VBox fx:id="sidebar" spacing="15" style="-fx-background-color: #1e1e2e; -fx-padding: 15;" prefWidth="220.0" alignment="TOP_CENTER">
@@ -69,7 +69,7 @@
                     </HBox>
                 </HBox>
 
-                <BarChart fx:id="chartOrcamentos" legendVisible="false" VBox.vgrow="ALWAYS" style="-fx-bar-fill: #27ae60; .default-color0.chart-bar { -fx-bar-fill: #27ae60; }">
+                <BarChart fx:id="chartOrcamentos" legendVisible="false" VBox.vgrow="ALWAYS">
                     <xAxis>
                         <CategoryAxis fx:id="xAxis" side="BOTTOM" tickLabelFill="WHITE" />
                     </xAxis>

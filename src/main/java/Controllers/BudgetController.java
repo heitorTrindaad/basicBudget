@@ -1,4 +1,4 @@
-package App.Controllers;
+package Controllers;
 
 import Model.*;
 import Service.budgetService;
@@ -30,6 +30,9 @@ public class BudgetController {
     private Label lblTotal;
     @FXML
     private ComboBox<Client> cbClientes;
+
+    @FXML
+    private CheckBox checkClosed; // 1. O CHECKBOX DO STATUS ADICIONADO AQUI
 
     @FXML
     private TreeTableColumn<Object, String> colDescricao;
@@ -277,6 +280,7 @@ public class BudgetController {
         Budget b = new Budget();
         b.setClient(cbClientes.getValue());
         b.setTotal(totalGeral);
+        b.setClosed(checkClosed.isSelected()); // 2. CAPTURA SE ESTÁ FECHADO OU NÃO
 
         List<BudgetSubgroup> listaFinal = new ArrayList<>();
         for (TreeItem<Object> node : rootNode.getChildren()) {
@@ -296,6 +300,7 @@ public class BudgetController {
         cbClientes.setValue(null);
         cbProduto.setValue(null);
         txtQtd.clear();
+        checkClosed.setSelected(false); // 3. RESET DO CHECKBOX LIMPO
     }
 
     private void mostrarAlerta(String msg) {

@@ -1,4 +1,4 @@
-package App.Controllers;
+package Controllers;
 
 import Model.Product;
 import Service.productService;

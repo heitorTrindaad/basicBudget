@@ -7,10 +7,15 @@
 
 <VBox spacing="10" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="App.Controllers.BudgetController">
+      fx:controller="Controllers.BudgetController">
 
-    <Label text="Cliente:" style="-fx-font-weight: bold;"/>
-    <ComboBox fx:id="cbClientes" prefWidth="300" promptText="Selecione o Cliente"/>
+   <HBox spacing="30" alignment="CENTER_LEFT">
+        <VBox spacing="5">
+            <Label text="Cliente:" style="-fx-font-weight: bold;"/>
+            <ComboBox fx:id="cbClientes" prefWidth="300" promptText="Selecione o Cliente"/>
+        </VBox>
+        <CheckBox fx:id="checkClosed" text="Negócio Fechado (Faturado)" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+    </HBox>
 
     <Separator/>
 

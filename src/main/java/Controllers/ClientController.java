@@ -1,4 +1,4 @@
-package App.Controllers;
+package Controllers;
 
 import Model.Client;
 import Service.clientService;

@@ -1,4 +1,4 @@
-package App.Controllers;
+package Controllers;
 
 import Service.budgetService;
 import Model.Budget;
@@ -85,6 +85,7 @@ public class MainLayoutController {
 
             Map<String, Double> dadosAgrupados = orcamentos.stream()
                     .filter(b -> b.getDate() != null)
+                    .filter(Budget::isClosed) // === FILTRO ADICIONADO: Pula os abertos ===
                     .collect(Collectors.groupingBy(
                             b -> b.getDate().getMonth().getDisplayName(TextStyle.SHORT, new Locale("pt", "BR")),
                             Collectors.summingDouble(b -> b.getTotal().doubleValue())));
@@ -95,6 +96,7 @@ public class MainLayoutController {
 
             Map<String, Double> dadosAgrupados = orcamentos.stream()
                     .filter(b -> b.getDate() != null)
+                    .filter(Budget::isClosed) // === FILTRO ADICIONADO: Pula os abertos ===
                     .collect(Collectors.groupingBy(
                             b -> String.valueOf(b.getDate().getYear()),
                             Collectors.summingDouble(b -> b.getTotal().doubleValue())));
@@ -102,20 +104,18 @@ public class MainLayoutController {
             dadosAgrupados.forEach((ano, total) -> series.getData().add(new XYChart.Data<>(ano, total)));
         }
 
-        // ... fim do método carregarDadosGrafico ...
         chartOrcamentos.getData().add(series);
 
-        // === ADICIONE ESTE BLOCO LOGO ABAIXO DO ADICIONAR SÉRIE ===
         int quantidadeDeBarras = series.getData().size();
 
         if (quantidadeDeBarras == 1) {
-            chartOrcamentos.setCategoryGap(450); // Muita folga se for só 1 mês
+            chartOrcamentos.setCategoryGap(450);
         } else if (quantidadeDeBarras == 2) {
-            chartOrcamentos.setCategoryGap(250); // Folga média para 2 meses
+            chartOrcamentos.setCategoryGap(250);
         } else if (quantidadeDeBarras == 3) {
-            chartOrcamentos.setCategoryGap(150); // Folga menor para 3 meses
+            chartOrcamentos.setCategoryGap(150);
         } else {
-            chartOrcamentos.setCategoryGap(20); // Espaçamento padrão profissional para 4 meses ou mais
+            chartOrcamentos.setCategoryGap(20);
         }
     }
 

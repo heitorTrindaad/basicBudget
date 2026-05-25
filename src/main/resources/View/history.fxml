@@ -1,35 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="App.Controllers.HistoryController"
-      spacing="10"
-      style="-fx-padding:20;">
+<SplitPane dividerPositions="0.5" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.HistoryController">
+    
+    <VBox spacing="10" style="-fx-padding: 15; -fx-background-color: #2b2b2b;">
+        <Label text="Histórico de Orçamentos" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+        <TableView fx:id="tblHistorico" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colData" text="Data" prefWidth="90"/>
+                <TableColumn fx:id="colCliente" text="Cliente" prefWidth="180"/>
+                <TableColumn fx:id="colTotal" text="Total" prefWidth="100"/>
+                <TableColumn fx:id="colStatus" text="Status" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </VBox>
 
-    <Label text="Histórico de Orçamentos"
-           style="-fx-font-size:18; -fx-font-weight: bold;"/>
-
-    <TextField fx:id="txtPesquisa"
-               promptText="🔍 Pesquisar por cliente ou ID do orçamento..."
-               style="-fx-padding: 8; -fx-background-radius: 5;"/>
-
-    <ListView fx:id="listHistory" VBox.vgrow="ALWAYS"/>
-
-    <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button text="Ver Detalhes"
-                onAction="#verDetalhes"
-                style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
-
-        <Button text="Editar"
-                onAction="#editarOrcamento"
-                style="-fx-background-color: #f1c40f; -fx-text-fill: black;"/>
-
-        <Button text="Excluir"
-                onAction="#excluirOrcamento"
-                style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
-    </HBox>
-
-</VBox>
+    <VBox spacing="10" style="-fx-padding: 15; -fx-background-color: #3c3f41;">
+        <Label text="Detalhes do Orçamento" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+        
+        <TextArea fx:id="txtDetalhes" editable="false" VBox.vgrow="ALWAYS" 
+                  style="-fx-font-family: 'Consolas'; -fx-font-size: 14px; -fx-control-inner-background: #2b2b2b; -fx-text-fill: #a9b7c6;"/>
+        
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button fx:id="btnAlterarStatus" text="Alterar Status" onAction="#alterarStatus" 
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15;"/>
+        </HBox>
+    </VBox>
+</SplitPane>
