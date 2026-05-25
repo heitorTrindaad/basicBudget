@@ -8,6 +8,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +53,7 @@ public class BudgetController {
 
     private TreeItem<Object> rootNode = new TreeItem<>("Orçamento");
     private BigDecimal totalGeral = BigDecimal.ZERO;
+    private Budget budgetEmEdicao;
 
     @FXML
     public void initialize() {
@@ -272,35 +275,70 @@ public class BudgetController {
 
     @FXML
     public void salvar() {
+
         if (cbClientes.getValue() == null) {
             mostrarAlerta("Selecione um cliente!");
             return;
         }
 
-        Budget b = new Budget();
+        Budget b;
+
+        if (budgetEmEdicao != null) {
+            b = budgetEmEdicao;
+        } else {
+            b = new Budget();
+        }
+
         b.setClient(cbClientes.getValue());
         b.setTotal(totalGeral);
-        b.setClosed(checkClosed.isSelected()); // 2. CAPTURA SE ESTÁ FECHADO OU NÃO
+        b.setClosed(checkClosed.isSelected());
 
         List<BudgetSubgroup> listaFinal = new ArrayList<>();
+
         for (TreeItem<Object> node : rootNode.getChildren()) {
-            listaFinal.add((BudgetSubgroup) node.getValue());
+
+            listaFinal.add(
+                    (BudgetSubgroup) node.getValue());
         }
+
         b.setSubgroups(listaFinal);
 
-        budService.save(b);
-        mostrarAlerta("Orçamento salvo com sucesso!");
+        if (budgetEmEdicao == null) {
+
+            budService.save(b);
+
+            mostrarAlerta(
+                    "Orçamento salvo com sucesso!");
+
+        } else {
+
+            budService.update(
+                    budgetEmEdicao.getId(),
+                    b);
+            Stage stage = (Stage) lblTotal
+                    .getScene()
+                    .getWindow();
+
+            stage.close();
+
+            mostrarAlerta(
+                    "Orçamento atualizado com sucesso!");
+        }
+
         limparTela();
     }
 
     private void limparTela() {
+
         rootNode.getChildren().clear();
         totalGeral = BigDecimal.ZERO;
-        lblTotal.setText("Total Geral: R$ 0.00");
+        lblTotal.setText(
+                "Total Geral: R$ 0.00");
         cbClientes.setValue(null);
         cbProduto.setValue(null);
         txtQtd.clear();
-        checkClosed.setSelected(false); // 3. RESET DO CHECKBOX LIMPO
+        checkClosed.setSelected(false);
+        budgetEmEdicao = null;
     }
 
     private void mostrarAlerta(String msg) {
@@ -308,5 +346,35 @@ public class BudgetController {
         a.setHeaderText(null);
         a.setContentText(msg);
         a.show();
+    }
+
+    public void carregarOrcamento(Budget budget) {
+
+        budgetEmEdicao = budget;
+
+        cbClientes.setValue(budget.getClient());
+
+        checkClosed.setSelected(
+                budget.isClosed());
+
+        rootNode.getChildren().clear();
+
+        for (BudgetSubgroup grupo : budget.getSubgroups()) {
+
+            TreeItem<Object> grupoNode = new TreeItem<>(grupo);
+
+            for (BudgetSubgetItem item : grupo.getItems()) {
+
+                grupoNode.getChildren().add(
+                        new TreeItem<>(item));
+            }
+
+            grupoNode.setExpanded(true);
+
+            rootNode.getChildren()
+                    .add(grupoNode);
+        }
+
+        recalcularTotalGeral();
     }
 }
